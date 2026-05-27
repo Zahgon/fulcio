@@ -18,9 +18,7 @@ package server
 import (
 	"context"
 
-	"github.com/sigstore/fulcio/pkg/log"
 	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
 )
 
 const (
@@ -42,21 +40,7 @@ const (
 )
 
 func handleFulcioGRPCError(ctx context.Context, code codes.Code, err error, message string, fields ...any) error {
+	_ = "STUB: not implemented"
 	// Use log level "warning" for codes that are likely client errors, see https://grpc.github.io/grpc/core/md_doc_statuscodes.html
-	switch code {
-	case codes.InvalidArgument,
-		codes.NotFound,
-		codes.AlreadyExists,
-		codes.PermissionDenied,
-		codes.Unauthenticated,
-		codes.FailedPrecondition,
-		codes.OutOfRange,
-		codes.Aborted,
-		codes.ResourceExhausted,
-		codes.Canceled:
-		log.ContextLogger(ctx).Warnw(err.Error(), append([]any{"code", code, "clientMessage", message, "error", err}, fields...)...)
-	default:
-		log.ContextLogger(ctx).Errorw(err.Error(), append([]any{"code", code, "clientMessage", message, "error", err}, fields...)...)
-	}
-	return status.Error(code, message)
+	return nil
 }

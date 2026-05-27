@@ -16,10 +16,6 @@ package identity
 
 import (
 	"context"
-	"encoding/base64"
-	"encoding/json"
-	"fmt"
-	"strings"
 
 	"github.com/sigstore/fulcio/pkg/config"
 )
@@ -27,35 +23,8 @@ import (
 type IssuerPool []Issuer
 
 func (p IssuerPool) Authenticate(ctx context.Context, token string, opts ...config.InsecureOIDCConfigOption) (Principal, error) {
-	url, err := extractIssuerURL(token)
-	if err != nil {
-		return nil, err
-	}
-
-	for _, issuer := range p {
-		if issuer.Match(ctx, url) {
-			return issuer.Authenticate(ctx, token, opts...)
-		}
-	}
-	return nil, fmt.Errorf("failed to match issuer URL %s from token with any configured providers", url)
+	_ = "STUB: not implemented"
+	return *new(Principal), nil
 }
 
-func extractIssuerURL(token string) (string, error) {
-	if strings.Count(token, ".") != 2 {
-		return "", fmt.Errorf("oidc: malformed jwt, token must have 3 parts")
-	}
-
-	parts := strings.SplitN(token, ".", 3)
-	raw, err := base64.RawURLEncoding.DecodeString(parts[1])
-	if err != nil {
-		return "", fmt.Errorf("oidc: malformed jwt payload: %w", err)
-	}
-
-	var payload struct {
-		Issuer string `json:"iss"`
-	}
-	if err := json.Unmarshal(raw, &payload); err != nil {
-		return "", fmt.Errorf("oidc: failed to unmarshal claims: %w", err)
-	}
-	return payload.Issuer, nil
-}
+func extractIssuerURL(token string) (string, error) { _ = "STUB: not implemented"; return "", nil }

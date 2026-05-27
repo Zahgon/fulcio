@@ -17,17 +17,9 @@ package username
 import (
 	"context"
 	"crypto/x509"
-	"crypto/x509/pkix"
-	"errors"
-	"fmt"
-	"strings"
 
-	"github.com/asaskevich/govalidator"
 	"github.com/coreos/go-oidc/v3/oidc"
-	"github.com/sigstore/fulcio/pkg/certificate"
-	"github.com/sigstore/fulcio/pkg/config"
 	"github.com/sigstore/fulcio/pkg/identity"
-	"github.com/sigstore/sigstore/pkg/cryptoutils"
 )
 
 type principal struct {
@@ -37,52 +29,15 @@ type principal struct {
 }
 
 func PrincipalFromIDToken(ctx context.Context, token *oidc.IDToken) (identity.Principal, error) {
-	username := token.Subject
-
-	if strings.Contains(username, "!") {
-		return nil, errors.New("username cannot contain ! character")
-	}
-
-	if govalidator.IsEmail(username) {
-		return nil, fmt.Errorf("uri subject should not be an email address")
-	}
-
-	cfg, ok := config.FromContext(ctx).GetIssuer(token.Issuer)
-	if !ok {
-		return nil, errors.New("invalid configuration for OIDC ID Token issuer")
-	}
-
-	unIdentity := fmt.Sprintf("%s!%s", username, cfg.SubjectDomain)
-
-	return principal{
-		issuer:     token.Issuer,
-		username:   username,
-		unIdentity: unIdentity,
-	}, nil
+	_ = "STUB: not implemented"
+	return *new(identity.Principal), nil
 }
 
-func (p principal) Name(context.Context) string {
-	return p.username
-}
+func (p principal) Name(context.Context) string { _ = "STUB: not implemented"; return "" }
 
 func (p principal) Embed(_ context.Context, cert *x509.Certificate) error {
-	var exts []pkix.Extension
-
-	ext, err := cryptoutils.MarshalOtherNameSAN(p.unIdentity, true /*critical*/)
-	if err != nil {
-		return err
-	}
-	exts = append(exts, *ext)
-
-	issuerExt, err := certificate.Extensions{
-		Issuer:  p.issuer,
-		Subject: p.username,
-	}.Render()
-	if err != nil {
-		return err
-	}
-	exts = append(exts, issuerExt...)
-
-	cert.ExtraExtensions = exts
+	_ = "STUB: not implemented"
 	return nil
 }
+
+/*critical*/

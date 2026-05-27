@@ -17,13 +17,9 @@ package main
 
 import (
 	"flag"
-	"fmt"
 	"log"
-	"net/http"
 
 	dto "github.com/prometheus/client_model/go"
-	"github.com/prometheus/common/expfmt"
-	"github.com/prometheus/common/model"
 )
 
 const (
@@ -32,14 +28,10 @@ const (
 )
 
 func parseMF(url string) (map[string]*dto.MetricFamily, error) {
-	resp, err := http.Get(url) // nolint
-	if err != nil {
-		return nil, err
-	}
-	defer resp.Body.Close()
-
-	parser := expfmt.NewTextParser(model.UTF8Validation)
-	return parser.TextToMetricFamilies(resp.Body)
+	_ = "STUB: not implemented"
+	return nil,
+		// nolint
+		nil
 }
 
 func main() {
@@ -72,42 +64,6 @@ func main() {
 }
 
 // Make sure latency is a Histogram, and it has a POST with a 201.
-func checkLatency(latency *dto.MetricFamily) error {
-	if *latency.Type != *dto.MetricType_HISTOGRAM.Enum() {
-		return fmt.Errorf("wrong type, wanted %+v, got: %+v", dto.MetricType_HISTOGRAM.Enum(), latency.Type)
-	}
+func checkLatency(latency *dto.MetricFamily) error { _ = "STUB: not implemented"; return nil }
 
-	for _, metric := range latency.Metric {
-		var code string
-		var method string
-		for _, value := range metric.Label {
-			if *value.Name == "code" {
-				code = *value.Value
-			}
-			if *value.Name == "method" {
-				method = *value.Value
-			}
-		}
-		if code == "201" && method == "post" {
-			if *metric.Histogram.SampleCount != 1 {
-				return fmt.Errorf("unexpected samplecount, wanted 1, got %d", *metric.Histogram.SampleCount)
-			}
-			return nil
-		}
-	}
-
-	return fmt.Errorf("got multiple entries, or none for metric, wanted one, got: %+v", latency.Metric)
-}
-
-func checkCertCount(certCount *dto.MetricFamily) error {
-	if *certCount.Type != *dto.MetricType_COUNTER.Enum() {
-		return fmt.Errorf("wrong type, wanted %+v, got: %+v", dto.MetricType_COUNTER.Enum(), certCount.Type)
-	}
-	if len(certCount.Metric) != 1 {
-		return fmt.Errorf("got multiple entries, or none for metric, wanted one, got: %+v", certCount.Metric)
-	}
-	if *certCount.Metric[0].Counter.Value < 1 {
-		return fmt.Errorf("got incorrect cert count, wanted one, got: %f", *certCount.Metric[0].Counter.Value)
-	}
-	return nil
-}
+func checkCertCount(certCount *dto.MetricFamily) error { _ = "STUB: not implemented"; return nil }

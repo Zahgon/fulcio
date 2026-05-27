@@ -16,11 +16,9 @@ package chainguard
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/sigstore/fulcio/pkg/config"
 	"github.com/sigstore/fulcio/pkg/identity"
-	"github.com/sigstore/fulcio/pkg/identity/base"
 )
 
 type issuer struct {
@@ -28,13 +26,11 @@ type issuer struct {
 }
 
 func Issuer(issuerURL string) identity.Issuer {
-	return &issuer{base.Issuer(issuerURL)}
+	_ = "STUB: not implemented"
+	return *new(identity.Issuer)
 }
 
 func (e *issuer) Authenticate(ctx context.Context, token string, opts ...config.InsecureOIDCConfigOption) (identity.Principal, error) {
-	idtoken, err := identity.Authorize(ctx, token, opts...)
-	if err != nil {
-		return nil, fmt.Errorf("authorizing chainguard issuer: %w", err)
-	}
-	return PrincipalFromIDToken(ctx, idtoken)
+	_ = "STUB: not implemented"
+	return *new(identity.Principal), nil
 }

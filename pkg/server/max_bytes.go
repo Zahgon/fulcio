@@ -19,9 +19,6 @@ import "net/http"
 
 // WithMaxBytes sets the max request size on a handler to n bytes.
 func WithMaxBytes(next http.Handler, n int64) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		limitedReader := http.MaxBytesReader(w, r.Body, n)
-		r.Body = limitedReader
-		next.ServeHTTP(w, r)
-	})
+	_ = "STUB: not implemented"
+	return *new(http.Handler)
 }

@@ -17,15 +17,9 @@ package email
 import (
 	"context"
 	"crypto/x509"
-	"errors"
-	"fmt"
 
-	"github.com/asaskevich/govalidator"
 	"github.com/coreos/go-oidc/v3/oidc"
-	"github.com/sigstore/fulcio/pkg/certificate"
-	"github.com/sigstore/fulcio/pkg/config"
 	"github.com/sigstore/fulcio/pkg/identity"
-	"github.com/sigstore/fulcio/pkg/oauthflow"
 )
 
 type principal struct {
@@ -35,52 +29,15 @@ type principal struct {
 }
 
 func PrincipalFromIDToken(ctx context.Context, token *oidc.IDToken) (identity.Principal, error) {
-	emailAddress, emailVerified, err := oauthflow.EmailFromIDToken(token)
-	if err != nil {
-		return nil, err
-	}
-
-	cfg, ok := config.FromContext(ctx).GetIssuer(token.Issuer)
-	if !ok {
-		return nil, errors.New("invalid configuration for OIDC ID Token issuer")
-	}
-
-	// Check email_verified claim unless the issuer is configured to skip verification
-	if !cfg.SkipEmailVerification && !emailVerified {
-		return nil, errors.New("email_verified claim was false")
-	}
-
-	if !govalidator.IsEmail(emailAddress) {
-		return nil, fmt.Errorf("email address is not valid")
-	}
-
-	issuer, err := oauthflow.IssuerFromIDToken(token, cfg.IssuerClaim)
-	if err != nil {
-		return nil, err
-	}
-
-	return principal{
-		issuer:  issuer,
-		address: emailAddress,
-		subject: token.Subject,
-	}, nil
+	_ = "STUB: not implemented"
+	return *new(identity.Principal), nil
 }
 
-func (p principal) Name(_ context.Context) string {
-	return p.address
-}
+// Check email_verified claim unless the issuer is configured to skip verification
+
+func (p principal) Name(_ context.Context) string { _ = "STUB: not implemented"; return "" }
 
 func (p principal) Embed(_ context.Context, cert *x509.Certificate) error {
-	cert.EmailAddresses = []string{p.address}
-
-	var err error
-	cert.ExtraExtensions, err = certificate.Extensions{
-		Issuer:  p.issuer,
-		Subject: p.subject,
-	}.Render()
-	if err != nil {
-		return err
-	}
-
+	_ = "STUB: not implemented"
 	return nil
 }

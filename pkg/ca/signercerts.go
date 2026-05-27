@@ -35,12 +35,15 @@ type SignerCerts struct {
 }
 
 func (s *SignerCerts) GetSignerWithChain() ([]*x509.Certificate, crypto.Signer) {
-	return s.Certs, s.Signer
+	_ = "STUB: not implemented"
+	return nil,
+
+		// SignerCertsMutex holds a certificate chain and signer, and holds a reader lock
+		// when accessing the chain and signer. Use if a separate thread can concurrently
+		// update the chain and signer.
+		*new(crypto.Signer)
 }
 
-// SignerCertsMutex holds a certificate chain and signer, and holds a reader lock
-// when accessing the chain and signer. Use if a separate thread can concurrently
-// update the chain and signer.
 type SignerCertsMutex struct {
 	sync.RWMutex
 
@@ -51,8 +54,6 @@ type SignerCertsMutex struct {
 }
 
 func (s *SignerCertsMutex) GetSignerWithChain() ([]*x509.Certificate, crypto.Signer) {
-	s.RLock()
-	defer s.RUnlock()
-
-	return s.Certs, s.Signer
+	_ = "STUB: not implemented"
+	return nil, *new(crypto.Signer)
 }

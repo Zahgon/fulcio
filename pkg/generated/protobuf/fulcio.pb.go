@@ -22,13 +22,12 @@
 package protobuf
 
 import (
+	sync "sync"
+
 	_ "github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2/options"
 	_ "google.golang.org/genproto/googleapis/api/annotations"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
-	reflect "reflect"
-	sync "sync"
-	unsafe "unsafe"
 )
 
 const (
@@ -63,31 +62,29 @@ var (
 	}
 )
 
-func (x PublicKeyAlgorithm) Enum() *PublicKeyAlgorithm {
-	p := new(PublicKeyAlgorithm)
-	*p = x
-	return p
-}
+func (x PublicKeyAlgorithm) Enum() *PublicKeyAlgorithm { _ = "STUB: not implemented"; return nil }
 
-func (x PublicKeyAlgorithm) String() string {
-	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
-}
+func (x PublicKeyAlgorithm) String() string { _ = "STUB: not implemented"; return "" }
 
 func (PublicKeyAlgorithm) Descriptor() protoreflect.EnumDescriptor {
-	return file_fulcio_proto_enumTypes[0].Descriptor()
+	_ = "STUB: not implemented"
+	return *new(protoreflect.EnumDescriptor)
 }
 
 func (PublicKeyAlgorithm) Type() protoreflect.EnumType {
-	return &file_fulcio_proto_enumTypes[0]
+	_ = "STUB: not implemented"
+	return *new(protoreflect.EnumType)
 }
 
 func (x PublicKeyAlgorithm) Number() protoreflect.EnumNumber {
-	return protoreflect.EnumNumber(x)
+	_ = "STUB: not implemented"
+	return *new(protoreflect.EnumNumber)
 }
 
 // Deprecated: Use PublicKeyAlgorithm.Descriptor instead.
 func (PublicKeyAlgorithm) EnumDescriptor() ([]byte, []int) {
-	return file_fulcio_proto_rawDescGZIP(), []int{0}
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
 type CreateSigningCertificateRequest struct {
@@ -103,65 +100,40 @@ type CreateSigningCertificateRequest struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *CreateSigningCertificateRequest) Reset() {
-	*x = CreateSigningCertificateRequest{}
-	mi := &file_fulcio_proto_msgTypes[0]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
+func (x *CreateSigningCertificateRequest) Reset() { _ = "STUB: not implemented"; return }
 
-func (x *CreateSigningCertificateRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
+func (x *CreateSigningCertificateRequest) String() string { _ = "STUB: not implemented"; return "" }
 
-func (*CreateSigningCertificateRequest) ProtoMessage() {}
+func (*CreateSigningCertificateRequest) ProtoMessage() { _ = "STUB: not implemented"; return }
 
 func (x *CreateSigningCertificateRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_fulcio_proto_msgTypes[0]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
+	_ = "STUB: not implemented"
+	return *new(protoreflect.Message)
 }
 
 // Deprecated: Use CreateSigningCertificateRequest.ProtoReflect.Descriptor instead.
 func (*CreateSigningCertificateRequest) Descriptor() ([]byte, []int) {
-	return file_fulcio_proto_rawDescGZIP(), []int{0}
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
 func (x *CreateSigningCertificateRequest) GetCredentials() *Credentials {
-	if x != nil {
-		return x.Credentials
-	}
+	_ = "STUB: not implemented"
 	return nil
 }
 
 func (x *CreateSigningCertificateRequest) GetKey() isCreateSigningCertificateRequest_Key {
-	if x != nil {
-		return x.Key
-	}
-	return nil
+	_ = "STUB: not implemented"
+	return *new(isCreateSigningCertificateRequest_Key)
 }
 
 func (x *CreateSigningCertificateRequest) GetPublicKeyRequest() *PublicKeyRequest {
-	if x != nil {
-		if x, ok := x.Key.(*CreateSigningCertificateRequest_PublicKeyRequest); ok {
-			return x.PublicKeyRequest
-		}
-	}
+	_ = "STUB: not implemented"
 	return nil
 }
 
 func (x *CreateSigningCertificateRequest) GetCertificateSigningRequest() []byte {
-	if x != nil {
-		if x, ok := x.Key.(*CreateSigningCertificateRequest_CertificateSigningRequest); ok {
-			return x.CertificateSigningRequest
-		}
-	}
+	_ = "STUB: not implemented"
 	return nil
 }
 
@@ -187,9 +159,14 @@ type CreateSigningCertificateRequest_CertificateSigningRequest struct {
 	CertificateSigningRequest []byte `protobuf:"bytes,3,opt,name=certificate_signing_request,json=certificateSigningRequest,proto3,oneof"`
 }
 
-func (*CreateSigningCertificateRequest_PublicKeyRequest) isCreateSigningCertificateRequest_Key() {}
+func (*CreateSigningCertificateRequest_PublicKeyRequest) isCreateSigningCertificateRequest_Key() {
+	_ = "STUB: not implemented"
+	return
+}
 
 func (*CreateSigningCertificateRequest_CertificateSigningRequest) isCreateSigningCertificateRequest_Key() {
+	_ = "STUB: not implemented"
+	return
 }
 
 type Credentials struct {
@@ -202,51 +179,26 @@ type Credentials struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *Credentials) Reset() {
-	*x = Credentials{}
-	mi := &file_fulcio_proto_msgTypes[1]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
+func (x *Credentials) Reset() { _ = "STUB: not implemented"; return }
 
-func (x *Credentials) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
+func (x *Credentials) String() string { _ = "STUB: not implemented"; return "" }
 
-func (*Credentials) ProtoMessage() {}
+func (*Credentials) ProtoMessage() { _ = "STUB: not implemented"; return }
 
 func (x *Credentials) ProtoReflect() protoreflect.Message {
-	mi := &file_fulcio_proto_msgTypes[1]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
+	_ = "STUB: not implemented"
+	return *new(protoreflect.Message)
 }
 
 // Deprecated: Use Credentials.ProtoReflect.Descriptor instead.
-func (*Credentials) Descriptor() ([]byte, []int) {
-	return file_fulcio_proto_rawDescGZIP(), []int{1}
-}
+func (*Credentials) Descriptor() ([]byte, []int) { _ = "STUB: not implemented"; return nil, nil }
 
 func (x *Credentials) GetCredentials() isCredentials_Credentials {
-	if x != nil {
-		return x.Credentials
-	}
-	return nil
+	_ = "STUB: not implemented"
+	return *new(isCredentials_Credentials)
 }
 
-func (x *Credentials) GetOidcIdentityToken() string {
-	if x != nil {
-		if x, ok := x.Credentials.(*Credentials_OidcIdentityToken); ok {
-			return x.OidcIdentityToken
-		}
-	}
-	return ""
-}
+func (x *Credentials) GetOidcIdentityToken() string { _ = "STUB: not implemented"; return "" }
 
 type isCredentials_Credentials interface {
 	isCredentials_Credentials()
@@ -257,7 +209,10 @@ type Credentials_OidcIdentityToken struct {
 	OidcIdentityToken string `protobuf:"bytes,1,opt,name=oidc_identity_token,json=oidcIdentityToken,proto3,oneof"`
 }
 
-func (*Credentials_OidcIdentityToken) isCredentials_Credentials() {}
+func (*Credentials_OidcIdentityToken) isCredentials_Credentials() {
+	_ = "STUB: not implemented"
+	return
+}
 
 type PublicKeyRequest struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
@@ -271,49 +226,23 @@ type PublicKeyRequest struct {
 	sizeCache         protoimpl.SizeCache
 }
 
-func (x *PublicKeyRequest) Reset() {
-	*x = PublicKeyRequest{}
-	mi := &file_fulcio_proto_msgTypes[2]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
+func (x *PublicKeyRequest) Reset() { _ = "STUB: not implemented"; return }
 
-func (x *PublicKeyRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
+func (x *PublicKeyRequest) String() string { _ = "STUB: not implemented"; return "" }
 
-func (*PublicKeyRequest) ProtoMessage() {}
+func (*PublicKeyRequest) ProtoMessage() { _ = "STUB: not implemented"; return }
 
 func (x *PublicKeyRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_fulcio_proto_msgTypes[2]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
+	_ = "STUB: not implemented"
+	return *new(protoreflect.Message)
 }
 
 // Deprecated: Use PublicKeyRequest.ProtoReflect.Descriptor instead.
-func (*PublicKeyRequest) Descriptor() ([]byte, []int) {
-	return file_fulcio_proto_rawDescGZIP(), []int{2}
-}
+func (*PublicKeyRequest) Descriptor() ([]byte, []int) { _ = "STUB: not implemented"; return nil, nil }
 
-func (x *PublicKeyRequest) GetPublicKey() *PublicKey {
-	if x != nil {
-		return x.PublicKey
-	}
-	return nil
-}
+func (x *PublicKeyRequest) GetPublicKey() *PublicKey { _ = "STUB: not implemented"; return nil }
 
-func (x *PublicKeyRequest) GetProofOfPossession() []byte {
-	if x != nil {
-		return x.ProofOfPossession
-	}
-	return nil
-}
+func (x *PublicKeyRequest) GetProofOfPossession() []byte { _ = "STUB: not implemented"; return nil }
 
 type PublicKey struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
@@ -326,49 +255,26 @@ type PublicKey struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *PublicKey) Reset() {
-	*x = PublicKey{}
-	mi := &file_fulcio_proto_msgTypes[3]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
+func (x *PublicKey) Reset() { _ = "STUB: not implemented"; return }
 
-func (x *PublicKey) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
+func (x *PublicKey) String() string { _ = "STUB: not implemented"; return "" }
 
-func (*PublicKey) ProtoMessage() {}
+func (*PublicKey) ProtoMessage() { _ = "STUB: not implemented"; return }
 
 func (x *PublicKey) ProtoReflect() protoreflect.Message {
-	mi := &file_fulcio_proto_msgTypes[3]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
+	_ = "STUB: not implemented"
+	return *new(protoreflect.Message)
 }
 
 // Deprecated: Use PublicKey.ProtoReflect.Descriptor instead.
-func (*PublicKey) Descriptor() ([]byte, []int) {
-	return file_fulcio_proto_rawDescGZIP(), []int{3}
-}
+func (*PublicKey) Descriptor() ([]byte, []int) { _ = "STUB: not implemented"; return nil, nil }
 
 func (x *PublicKey) GetAlgorithm() PublicKeyAlgorithm {
-	if x != nil {
-		return x.Algorithm
-	}
-	return PublicKeyAlgorithm_PUBLIC_KEY_ALGORITHM_UNSPECIFIED
+	_ = "STUB: not implemented"
+	return *new(PublicKeyAlgorithm)
 }
 
-func (x *PublicKey) GetContent() string {
-	if x != nil {
-		return x.Content
-	}
-	return ""
-}
+func (x *PublicKey) GetContent() string { _ = "STUB: not implemented"; return "" }
 
 type SigningCertificate struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
@@ -381,58 +287,32 @@ type SigningCertificate struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *SigningCertificate) Reset() {
-	*x = SigningCertificate{}
-	mi := &file_fulcio_proto_msgTypes[4]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
+func (x *SigningCertificate) Reset() { _ = "STUB: not implemented"; return }
 
-func (x *SigningCertificate) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
+func (x *SigningCertificate) String() string { _ = "STUB: not implemented"; return "" }
 
-func (*SigningCertificate) ProtoMessage() {}
+func (*SigningCertificate) ProtoMessage() { _ = "STUB: not implemented"; return }
 
 func (x *SigningCertificate) ProtoReflect() protoreflect.Message {
-	mi := &file_fulcio_proto_msgTypes[4]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
+	_ = "STUB: not implemented"
+	return *new(protoreflect.Message)
 }
 
 // Deprecated: Use SigningCertificate.ProtoReflect.Descriptor instead.
-func (*SigningCertificate) Descriptor() ([]byte, []int) {
-	return file_fulcio_proto_rawDescGZIP(), []int{4}
-}
+func (*SigningCertificate) Descriptor() ([]byte, []int) { _ = "STUB: not implemented"; return nil, nil }
 
 func (x *SigningCertificate) GetCertificate() isSigningCertificate_Certificate {
-	if x != nil {
-		return x.Certificate
-	}
-	return nil
+	_ = "STUB: not implemented"
+	return *new(isSigningCertificate_Certificate)
 }
 
 func (x *SigningCertificate) GetSignedCertificateDetachedSct() *SigningCertificateDetachedSCT {
-	if x != nil {
-		if x, ok := x.Certificate.(*SigningCertificate_SignedCertificateDetachedSct); ok {
-			return x.SignedCertificateDetachedSct
-		}
-	}
+	_ = "STUB: not implemented"
 	return nil
 }
 
 func (x *SigningCertificate) GetSignedCertificateEmbeddedSct() *SigningCertificateEmbeddedSCT {
-	if x != nil {
-		if x, ok := x.Certificate.(*SigningCertificate_SignedCertificateEmbeddedSct); ok {
-			return x.SignedCertificateEmbeddedSct
-		}
-	}
+	_ = "STUB: not implemented"
 	return nil
 }
 
@@ -448,13 +328,20 @@ type SigningCertificate_SignedCertificateEmbeddedSct struct {
 	SignedCertificateEmbeddedSct *SigningCertificateEmbeddedSCT `protobuf:"bytes,2,opt,name=signed_certificate_embedded_sct,json=signedCertificateEmbeddedSct,proto3,oneof"`
 }
 
-func (*SigningCertificate_SignedCertificateDetachedSct) isSigningCertificate_Certificate() {}
+func (*SigningCertificate_SignedCertificateDetachedSct) isSigningCertificate_Certificate() {
+	_ = "STUB: not implemented"
+	return
+}
 
-func (*SigningCertificate_SignedCertificateEmbeddedSct) isSigningCertificate_Certificate() {}
+func (*SigningCertificate_SignedCertificateEmbeddedSct) isSigningCertificate_Certificate() {
+	_ = "STUB: not implemented"
 
-// (-- api-linter: core::0142::time-field-type=disabled
-//
-//	aip.dev/not-precedent: SCT is defined in RFC6962 and we keep the name consistent for easier understanding. --)
+	// (-- api-linter: core::0142::time-field-type=disabled
+	//
+	//	aip.dev/not-precedent: SCT is defined in RFC6962 and we keep the name consistent for easier understanding. --)
+	return
+}
+
 type SigningCertificateDetachedSCT struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The certificate chain serialized with the leaf certificate first, followed
@@ -473,47 +360,30 @@ type SigningCertificateDetachedSCT struct {
 	sizeCache                  protoimpl.SizeCache
 }
 
-func (x *SigningCertificateDetachedSCT) Reset() {
-	*x = SigningCertificateDetachedSCT{}
-	mi := &file_fulcio_proto_msgTypes[5]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
+func (x *SigningCertificateDetachedSCT) Reset() { _ = "STUB: not implemented"; return }
 
-func (x *SigningCertificateDetachedSCT) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
+func (x *SigningCertificateDetachedSCT) String() string { _ = "STUB: not implemented"; return "" }
 
-func (*SigningCertificateDetachedSCT) ProtoMessage() {}
+func (*SigningCertificateDetachedSCT) ProtoMessage() { _ = "STUB: not implemented"; return }
 
 func (x *SigningCertificateDetachedSCT) ProtoReflect() protoreflect.Message {
-	mi := &file_fulcio_proto_msgTypes[5]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
+	_ = "STUB: not implemented"
+	return *new(protoreflect.Message)
 }
 
 // Deprecated: Use SigningCertificateDetachedSCT.ProtoReflect.Descriptor instead.
 func (*SigningCertificateDetachedSCT) Descriptor() ([]byte, []int) {
-	return file_fulcio_proto_rawDescGZIP(), []int{5}
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
 func (x *SigningCertificateDetachedSCT) GetChain() *CertificateChain {
-	if x != nil {
-		return x.Chain
-	}
+	_ = "STUB: not implemented"
 	return nil
 }
 
 func (x *SigningCertificateDetachedSCT) GetSignedCertificateTimestamp() []byte {
-	if x != nil {
-		return x.SignedCertificateTimestamp
-	}
+	_ = "STUB: not implemented"
 	return nil
 }
 
@@ -532,40 +402,25 @@ type SigningCertificateEmbeddedSCT struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *SigningCertificateEmbeddedSCT) Reset() {
-	*x = SigningCertificateEmbeddedSCT{}
-	mi := &file_fulcio_proto_msgTypes[6]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
+func (x *SigningCertificateEmbeddedSCT) Reset() { _ = "STUB: not implemented"; return }
 
-func (x *SigningCertificateEmbeddedSCT) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
+func (x *SigningCertificateEmbeddedSCT) String() string { _ = "STUB: not implemented"; return "" }
 
-func (*SigningCertificateEmbeddedSCT) ProtoMessage() {}
+func (*SigningCertificateEmbeddedSCT) ProtoMessage() { _ = "STUB: not implemented"; return }
 
 func (x *SigningCertificateEmbeddedSCT) ProtoReflect() protoreflect.Message {
-	mi := &file_fulcio_proto_msgTypes[6]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
+	_ = "STUB: not implemented"
+	return *new(protoreflect.Message)
 }
 
 // Deprecated: Use SigningCertificateEmbeddedSCT.ProtoReflect.Descriptor instead.
 func (*SigningCertificateEmbeddedSCT) Descriptor() ([]byte, []int) {
-	return file_fulcio_proto_rawDescGZIP(), []int{6}
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
 func (x *SigningCertificateEmbeddedSCT) GetChain() *CertificateChain {
-	if x != nil {
-		return x.Chain
-	}
+	_ = "STUB: not implemented"
 	return nil
 }
 
@@ -576,34 +431,21 @@ type GetTrustBundleRequest struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GetTrustBundleRequest) Reset() {
-	*x = GetTrustBundleRequest{}
-	mi := &file_fulcio_proto_msgTypes[7]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
+func (x *GetTrustBundleRequest) Reset() { _ = "STUB: not implemented"; return }
 
-func (x *GetTrustBundleRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
+func (x *GetTrustBundleRequest) String() string { _ = "STUB: not implemented"; return "" }
 
-func (*GetTrustBundleRequest) ProtoMessage() {}
+func (*GetTrustBundleRequest) ProtoMessage() { _ = "STUB: not implemented"; return }
 
 func (x *GetTrustBundleRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_fulcio_proto_msgTypes[7]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
+	_ = "STUB: not implemented"
+	return *new(protoreflect.Message)
 }
 
 // Deprecated: Use GetTrustBundleRequest.ProtoReflect.Descriptor instead.
 func (*GetTrustBundleRequest) Descriptor() ([]byte, []int) {
-	return file_fulcio_proto_rawDescGZIP(), []int{7}
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
 type TrustBundle struct {
@@ -615,42 +457,21 @@ type TrustBundle struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *TrustBundle) Reset() {
-	*x = TrustBundle{}
-	mi := &file_fulcio_proto_msgTypes[8]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
+func (x *TrustBundle) Reset() { _ = "STUB: not implemented"; return }
 
-func (x *TrustBundle) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
+func (x *TrustBundle) String() string { _ = "STUB: not implemented"; return "" }
 
-func (*TrustBundle) ProtoMessage() {}
+func (*TrustBundle) ProtoMessage() { _ = "STUB: not implemented"; return }
 
 func (x *TrustBundle) ProtoReflect() protoreflect.Message {
-	mi := &file_fulcio_proto_msgTypes[8]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
+	_ = "STUB: not implemented"
+	return *new(protoreflect.Message)
 }
 
 // Deprecated: Use TrustBundle.ProtoReflect.Descriptor instead.
-func (*TrustBundle) Descriptor() ([]byte, []int) {
-	return file_fulcio_proto_rawDescGZIP(), []int{8}
-}
+func (*TrustBundle) Descriptor() ([]byte, []int) { _ = "STUB: not implemented"; return nil, nil }
 
-func (x *TrustBundle) GetChains() []*CertificateChain {
-	if x != nil {
-		return x.Chains
-	}
-	return nil
-}
+func (x *TrustBundle) GetChains() []*CertificateChain { _ = "STUB: not implemented"; return nil }
 
 type CertificateChain struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
@@ -660,42 +481,21 @@ type CertificateChain struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *CertificateChain) Reset() {
-	*x = CertificateChain{}
-	mi := &file_fulcio_proto_msgTypes[9]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
+func (x *CertificateChain) Reset() { _ = "STUB: not implemented"; return }
 
-func (x *CertificateChain) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
+func (x *CertificateChain) String() string { _ = "STUB: not implemented"; return "" }
 
-func (*CertificateChain) ProtoMessage() {}
+func (*CertificateChain) ProtoMessage() { _ = "STUB: not implemented"; return }
 
 func (x *CertificateChain) ProtoReflect() protoreflect.Message {
-	mi := &file_fulcio_proto_msgTypes[9]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
+	_ = "STUB: not implemented"
+	return *new(protoreflect.Message)
 }
 
 // Deprecated: Use CertificateChain.ProtoReflect.Descriptor instead.
-func (*CertificateChain) Descriptor() ([]byte, []int) {
-	return file_fulcio_proto_rawDescGZIP(), []int{9}
-}
+func (*CertificateChain) Descriptor() ([]byte, []int) { _ = "STUB: not implemented"; return nil, nil }
 
-func (x *CertificateChain) GetCertificates() []string {
-	if x != nil {
-		return x.Certificates
-	}
-	return nil
-}
+func (x *CertificateChain) GetCertificates() []string { _ = "STUB: not implemented"; return nil }
 
 // This is created for forward compatibility in case we want to add fields in the future.
 type GetConfigurationRequest struct {
@@ -704,34 +504,21 @@ type GetConfigurationRequest struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GetConfigurationRequest) Reset() {
-	*x = GetConfigurationRequest{}
-	mi := &file_fulcio_proto_msgTypes[10]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
+func (x *GetConfigurationRequest) Reset() { _ = "STUB: not implemented"; return }
 
-func (x *GetConfigurationRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
+func (x *GetConfigurationRequest) String() string { _ = "STUB: not implemented"; return "" }
 
-func (*GetConfigurationRequest) ProtoMessage() {}
+func (*GetConfigurationRequest) ProtoMessage() { _ = "STUB: not implemented"; return }
 
 func (x *GetConfigurationRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_fulcio_proto_msgTypes[10]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
+	_ = "STUB: not implemented"
+	return *new(protoreflect.Message)
 }
 
 // Deprecated: Use GetConfigurationRequest.ProtoReflect.Descriptor instead.
 func (*GetConfigurationRequest) Descriptor() ([]byte, []int) {
-	return file_fulcio_proto_rawDescGZIP(), []int{10}
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
 // The configuration for the Fulcio instance.
@@ -743,42 +530,21 @@ type Configuration struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *Configuration) Reset() {
-	*x = Configuration{}
-	mi := &file_fulcio_proto_msgTypes[11]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
+func (x *Configuration) Reset() { _ = "STUB: not implemented"; return }
 
-func (x *Configuration) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
+func (x *Configuration) String() string { _ = "STUB: not implemented"; return "" }
 
-func (*Configuration) ProtoMessage() {}
+func (*Configuration) ProtoMessage() { _ = "STUB: not implemented"; return }
 
 func (x *Configuration) ProtoReflect() protoreflect.Message {
-	mi := &file_fulcio_proto_msgTypes[11]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
+	_ = "STUB: not implemented"
+	return *new(protoreflect.Message)
 }
 
 // Deprecated: Use Configuration.ProtoReflect.Descriptor instead.
-func (*Configuration) Descriptor() ([]byte, []int) {
-	return file_fulcio_proto_rawDescGZIP(), []int{11}
-}
+func (*Configuration) Descriptor() ([]byte, []int) { _ = "STUB: not implemented"; return nil, nil }
 
-func (x *Configuration) GetIssuers() []*OIDCIssuer {
-	if x != nil {
-		return x.Issuers
-	}
-	return nil
-}
+func (x *Configuration) GetIssuers() []*OIDCIssuer { _ = "STUB: not implemented"; return nil }
 
 // Metadata about an OIDC issuer.
 type OIDCIssuer struct {
@@ -805,102 +571,40 @@ type OIDCIssuer struct {
 	sizeCache             protoimpl.SizeCache
 }
 
-func (x *OIDCIssuer) Reset() {
-	*x = OIDCIssuer{}
-	mi := &file_fulcio_proto_msgTypes[12]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
+func (x *OIDCIssuer) Reset() { _ = "STUB: not implemented"; return }
 
-func (x *OIDCIssuer) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
+func (x *OIDCIssuer) String() string { _ = "STUB: not implemented"; return "" }
 
-func (*OIDCIssuer) ProtoMessage() {}
+func (*OIDCIssuer) ProtoMessage() { _ = "STUB: not implemented"; return }
 
 func (x *OIDCIssuer) ProtoReflect() protoreflect.Message {
-	mi := &file_fulcio_proto_msgTypes[12]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
+	_ = "STUB: not implemented"
+	return *new(protoreflect.Message)
 }
 
 // Deprecated: Use OIDCIssuer.ProtoReflect.Descriptor instead.
-func (*OIDCIssuer) Descriptor() ([]byte, []int) {
-	return file_fulcio_proto_rawDescGZIP(), []int{12}
-}
+func (*OIDCIssuer) Descriptor() ([]byte, []int) { _ = "STUB: not implemented"; return nil, nil }
 
 func (x *OIDCIssuer) GetIssuer() isOIDCIssuer_Issuer {
-	if x != nil {
-		return x.Issuer
-	}
-	return nil
+	_ = "STUB: not implemented"
+	return *new(isOIDCIssuer_Issuer)
 }
 
-func (x *OIDCIssuer) GetIssuerUrl() string {
-	if x != nil {
-		if x, ok := x.Issuer.(*OIDCIssuer_IssuerUrl); ok {
-			return x.IssuerUrl
-		}
-	}
-	return ""
-}
+func (x *OIDCIssuer) GetIssuerUrl() string { _ = "STUB: not implemented"; return "" }
 
-func (x *OIDCIssuer) GetWildcardIssuerUrl() string {
-	if x != nil {
-		if x, ok := x.Issuer.(*OIDCIssuer_WildcardIssuerUrl); ok {
-			return x.WildcardIssuerUrl
-		}
-	}
-	return ""
-}
+func (x *OIDCIssuer) GetWildcardIssuerUrl() string { _ = "STUB: not implemented"; return "" }
 
-func (x *OIDCIssuer) GetAudience() string {
-	if x != nil {
-		return x.Audience
-	}
-	return ""
-}
+func (x *OIDCIssuer) GetAudience() string { _ = "STUB: not implemented"; return "" }
 
-func (x *OIDCIssuer) GetChallengeClaim() string {
-	if x != nil {
-		return x.ChallengeClaim
-	}
-	return ""
-}
+func (x *OIDCIssuer) GetChallengeClaim() string { _ = "STUB: not implemented"; return "" }
 
-func (x *OIDCIssuer) GetSpiffeTrustDomain() string {
-	if x != nil {
-		return x.SpiffeTrustDomain
-	}
-	return ""
-}
+func (x *OIDCIssuer) GetSpiffeTrustDomain() string { _ = "STUB: not implemented"; return "" }
 
-func (x *OIDCIssuer) GetIssuerType() string {
-	if x != nil {
-		return x.IssuerType
-	}
-	return ""
-}
+func (x *OIDCIssuer) GetIssuerType() string { _ = "STUB: not implemented"; return "" }
 
-func (x *OIDCIssuer) GetSubjectDomain() string {
-	if x != nil {
-		return x.SubjectDomain
-	}
-	return ""
-}
+func (x *OIDCIssuer) GetSubjectDomain() string { _ = "STUB: not implemented"; return "" }
 
-func (x *OIDCIssuer) GetSkipEmailVerification() bool {
-	if x != nil {
-		return x.SkipEmailVerification
-	}
-	return false
-}
+func (x *OIDCIssuer) GetSkipEmailVerification() bool { _ = "STUB: not implemented"; return false }
 
 type isOIDCIssuer_Issuer interface {
 	isOIDCIssuer_Issuer()
@@ -917,9 +621,9 @@ type OIDCIssuer_WildcardIssuerUrl struct {
 	WildcardIssuerUrl string `protobuf:"bytes,2,opt,name=wildcard_issuer_url,json=wildcardIssuerUrl,proto3,oneof"`
 }
 
-func (*OIDCIssuer_IssuerUrl) isOIDCIssuer_Issuer() {}
+func (*OIDCIssuer_IssuerUrl) isOIDCIssuer_Issuer() { _ = "STUB: not implemented"; return }
 
-func (*OIDCIssuer_WildcardIssuerUrl) isOIDCIssuer_Issuer() {}
+func (*OIDCIssuer_WildcardIssuerUrl) isOIDCIssuer_Issuer() { _ = "STUB: not implemented"; return }
 
 var File_fulcio_proto protoreflect.FileDescriptor
 
@@ -991,12 +695,7 @@ var (
 	file_fulcio_proto_rawDescData []byte
 )
 
-func file_fulcio_proto_rawDescGZIP() []byte {
-	file_fulcio_proto_rawDescOnce.Do(func() {
-		file_fulcio_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_fulcio_proto_rawDesc), len(file_fulcio_proto_rawDesc)))
-	})
-	return file_fulcio_proto_rawDescData
-}
+func file_fulcio_proto_rawDescGZIP() []byte { _ = "STUB: not implemented"; return nil }
 
 var file_fulcio_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
 var file_fulcio_proto_msgTypes = make([]protoimpl.MessageInfo, 13)
@@ -1040,42 +739,5 @@ var file_fulcio_proto_depIdxs = []int32{
 	0,  // [0:10] is the sub-list for field type_name
 }
 
-func init() { file_fulcio_proto_init() }
-func file_fulcio_proto_init() {
-	if File_fulcio_proto != nil {
-		return
-	}
-	file_fulcio_proto_msgTypes[0].OneofWrappers = []any{
-		(*CreateSigningCertificateRequest_PublicKeyRequest)(nil),
-		(*CreateSigningCertificateRequest_CertificateSigningRequest)(nil),
-	}
-	file_fulcio_proto_msgTypes[1].OneofWrappers = []any{
-		(*Credentials_OidcIdentityToken)(nil),
-	}
-	file_fulcio_proto_msgTypes[4].OneofWrappers = []any{
-		(*SigningCertificate_SignedCertificateDetachedSct)(nil),
-		(*SigningCertificate_SignedCertificateEmbeddedSct)(nil),
-	}
-	file_fulcio_proto_msgTypes[12].OneofWrappers = []any{
-		(*OIDCIssuer_IssuerUrl)(nil),
-		(*OIDCIssuer_WildcardIssuerUrl)(nil),
-	}
-	type x struct{}
-	out := protoimpl.TypeBuilder{
-		File: protoimpl.DescBuilder{
-			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
-			RawDescriptor: unsafe.Slice(unsafe.StringData(file_fulcio_proto_rawDesc), len(file_fulcio_proto_rawDesc)),
-			NumEnums:      1,
-			NumMessages:   13,
-			NumExtensions: 0,
-			NumServices:   1,
-		},
-		GoTypes:           file_fulcio_proto_goTypes,
-		DependencyIndexes: file_fulcio_proto_depIdxs,
-		EnumInfos:         file_fulcio_proto_enumTypes,
-		MessageInfos:      file_fulcio_proto_msgTypes,
-	}.Build()
-	File_fulcio_proto = out.File
-	file_fulcio_proto_goTypes = nil
-	file_fulcio_proto_depIdxs = nil
-}
+func init()                   { file_fulcio_proto_init() }
+func file_fulcio_proto_init() { _ = "STUB: not implemented"; return }

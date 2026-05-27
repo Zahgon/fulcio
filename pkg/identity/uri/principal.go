@@ -17,14 +17,8 @@ package uri
 import (
 	"context"
 	"crypto/x509"
-	"errors"
-	"fmt"
-	"net/url"
 
-	"github.com/asaskevich/govalidator"
 	"github.com/coreos/go-oidc/v3/oidc"
-	"github.com/sigstore/fulcio/pkg/certificate"
-	"github.com/sigstore/fulcio/pkg/config"
 	"github.com/sigstore/fulcio/pkg/identity"
 )
 
@@ -34,57 +28,15 @@ type principal struct {
 }
 
 func PrincipalFromIDToken(ctx context.Context, token *oidc.IDToken) (identity.Principal, error) {
-	uriWithSubject := token.Subject
-
-	cfg, ok := config.FromContext(ctx).GetIssuer(token.Issuer)
-	if !ok {
-		return nil, errors.New("invalid configuration for OIDC ID Token issuer")
-	}
-
-	if govalidator.IsEmail(uriWithSubject) {
-		return nil, fmt.Errorf("uri subject should not be an email address")
-	}
-
-	// The subject hostname must exactly match the subject domain from the configuration
-	uSubject, err := url.Parse(uriWithSubject)
-	if err != nil {
-		return nil, err
-	}
-	uDomain, err := url.Parse(cfg.SubjectDomain)
-	if err != nil {
-		return nil, err
-	}
-	if uSubject.Scheme != uDomain.Scheme {
-		return nil, fmt.Errorf("subject URI scheme (%s) must match expected domain URI scheme (%s)", uSubject.Scheme, uDomain.Scheme)
-	}
-	if uSubject.Hostname() != uDomain.Hostname() {
-		return nil, fmt.Errorf("subject hostname (%s) must match expected domain (%s)", uSubject.Hostname(), uDomain.Hostname())
-	}
-
-	return principal{
-		issuer: token.Issuer,
-		uri:    uriWithSubject,
-	}, nil
+	_ = "STUB: not implemented"
+	return *new(identity.Principal), nil
 }
 
-func (p principal) Name(_ context.Context) string {
-	return p.uri
-}
+// The subject hostname must exactly match the subject domain from the configuration
+
+func (p principal) Name(_ context.Context) string { _ = "STUB: not implemented"; return "" }
 
 func (p principal) Embed(_ context.Context, cert *x509.Certificate) error {
-	subjectURI, err := url.Parse(p.uri)
-	if err != nil {
-		return err
-	}
-	cert.URIs = []*url.URL{subjectURI}
-
-	cert.ExtraExtensions, err = certificate.Extensions{
-		Issuer:  p.issuer,
-		Subject: p.uri,
-	}.Render()
-	if err != nil {
-		return err
-	}
-
+	_ = "STUB: not implemented"
 	return nil
 }

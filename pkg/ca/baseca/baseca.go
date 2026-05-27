@@ -18,14 +18,11 @@ package baseca
 import (
 	"context"
 	"crypto"
-	"crypto/rand"
 	"crypto/x509"
 	"crypto/x509/pkix"
 	"encoding/asn1"
 
 	ct "github.com/google/certificate-transparency-go"
-	cttls "github.com/google/certificate-transparency-go/tls"
-	ctx509 "github.com/google/certificate-transparency-go/x509"
 	"github.com/sigstore/fulcio/pkg/ca"
 	"github.com/sigstore/fulcio/pkg/identity"
 )
@@ -43,107 +40,34 @@ type BaseCA struct {
 }
 
 func (bca *BaseCA) CreatePrecertificate(ctx context.Context, principal identity.Principal, publicKey crypto.PublicKey) (*ca.CodeSigningPreCertificate, error) {
-	cert, err := ca.MakeX509(ctx, principal, publicKey)
-	if err != nil {
-		return nil, err
-	}
-
-	certChain, privateKey := bca.GetSignerWithChain()
-
-	// Append poison extension
-	cert.ExtraExtensions = append(cert.ExtraExtensions, pkix.Extension{
-		Id:       OIDExtensionCTPoison,
-		Critical: true,
-		Value:    asn1.NullBytes,
-	})
-
-	finalCertBytes, err := x509.CreateCertificate(rand.Reader, cert, certChain[0], publicKey, privateKey)
-	if err != nil {
-		return nil, err
-	}
-
-	csc, err := ca.CreateCSCFromDER(finalCertBytes, certChain)
-	if err != nil {
-		return nil, err
-	}
-
-	return &ca.CodeSigningPreCertificate{
-		PreCert:    csc.FinalCertificate,
-		CertChain:  csc.FinalChain,
-		PrivateKey: privateKey,
-	}, nil
+	_ = "STUB: not implemented"
+	return nil, nil
 }
+
+// Append poison extension
 
 // From https://github.com/letsencrypt/boulder/blob/54b697d51b9f63cfd6055577cd317d4096aeab08/issuance/issuance.go#L497
 func generateSCTListExt(scts []ct.SignedCertificateTimestamp) (pkix.Extension, error) {
-	list := ctx509.SignedCertificateTimestampList{}
-	for _, sct := range scts {
-		sctBytes, err := cttls.Marshal(sct)
-		if err != nil {
-			return pkix.Extension{}, err
-		}
-		list.SCTList = append(list.SCTList, ctx509.SerializedSCT{Val: sctBytes})
-	}
-	listBytes, err := cttls.Marshal(list)
-	if err != nil {
-		return pkix.Extension{}, err
-	}
-	extBytes, err := asn1.Marshal(listBytes)
-	if err != nil {
-		return pkix.Extension{}, err
-	}
-	return pkix.Extension{
-		Id:    OIDExtensionCTSCT,
-		Value: extBytes,
-	}, nil
+	_ = "STUB: not implemented"
+	return *new(pkix.Extension), nil
 }
 
 func (bca *BaseCA) IssueFinalCertificate(_ context.Context, precert *ca.CodeSigningPreCertificate, sct *ct.SignedCertificateTimestamp) (*ca.CodeSigningCertificate, error) {
+	_ = "STUB: not implemented"
 	// remove poison extension from precertificate.
-	var exts []pkix.Extension
-	for _, ext := range precert.PreCert.Extensions {
-		if !ext.Id.Equal(OIDExtensionCTPoison) {
-			exts = append(exts, ext)
-		}
-	}
-	// append SCT extension. Supports multiple SCTs, but Fulcio only writes to one log currently.
-	sctExt, err := generateSCTListExt([]ct.SignedCertificateTimestamp{*sct})
-	if err != nil {
-		return nil, err
-	}
-	exts = append(exts, sctExt)
-
-	cert := precert.PreCert
-	cert.ExtraExtensions = exts
-	finalCertBytes, err := x509.CreateCertificate(rand.Reader, cert, precert.CertChain[0], precert.PreCert.PublicKey, precert.PrivateKey)
-	if err != nil {
-		return nil, err
-	}
-
-	return ca.CreateCSCFromDER(finalCertBytes, precert.CertChain)
+	return nil, nil
 }
 
+// append SCT extension. Supports multiple SCTs, but Fulcio only writes to one log currently.
+
 func (bca *BaseCA) CreateCertificate(ctx context.Context, principal identity.Principal, publicKey crypto.PublicKey) (*ca.CodeSigningCertificate, error) {
-	cert, err := ca.MakeX509(ctx, principal, publicKey)
-	if err != nil {
-		return nil, err
-	}
-
-	certChain, privateKey := bca.GetSignerWithChain()
-
-	finalCertBytes, err := x509.CreateCertificate(rand.Reader, cert, certChain[0], publicKey, privateKey)
-	if err != nil {
-		return nil, err
-	}
-
-	return ca.CreateCSCFromDER(finalCertBytes, certChain)
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
 func (bca *BaseCA) TrustBundle(_ context.Context) ([][]*x509.Certificate, error) {
-	certs, _ := bca.GetSignerWithChain()
-	return [][]*x509.Certificate{certs}, nil
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
-func (bca *BaseCA) Close() error {
-	return nil
-}
+func (bca *BaseCA) Close() error { _ = "STUB: not implemented"; return nil }

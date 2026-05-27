@@ -16,11 +16,9 @@ package codefresh
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/sigstore/fulcio/pkg/config"
 	"github.com/sigstore/fulcio/pkg/identity"
-	"github.com/sigstore/fulcio/pkg/identity/base"
 )
 
 // Deprecated: Use ciprovider.ciProviderIssuer instead
@@ -30,13 +28,11 @@ type codefreshIssuer struct {
 
 // Deprecated: Use ciprovider.Issuer instead
 func Issuer(issuerURL string) identity.Issuer {
-	return &codefreshIssuer{base.Issuer(issuerURL)}
+	_ = "STUB: not implemented"
+	return *new(identity.Issuer)
 }
 
 func (e *codefreshIssuer) Authenticate(ctx context.Context, token string, opts ...config.InsecureOIDCConfigOption) (identity.Principal, error) {
-	idtoken, err := identity.Authorize(ctx, token, opts...)
-	if err != nil {
-		return nil, fmt.Errorf("authorizing codefresh issuer: %w", err)
-	}
-	return WorkflowPrincipalFromIDToken(ctx, idtoken)
+	_ = "STUB: not implemented"
+	return *new(identity.Principal), nil
 }

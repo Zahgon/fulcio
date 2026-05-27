@@ -22,15 +22,14 @@
 package legacy
 
 import (
+	sync "sync"
+
 	_ "github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2/options"
 	_ "google.golang.org/genproto/googleapis/api/annotations"
 	httpbody "google.golang.org/genproto/googleapis/api/httpbody"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	emptypb "google.golang.org/protobuf/types/known/emptypb"
-	reflect "reflect"
-	sync "sync"
-	unsafe "unsafe"
 )
 
 const (
@@ -65,57 +64,38 @@ type CreateSigningCertificateRequest struct {
 	sizeCache                 protoimpl.SizeCache
 }
 
-func (x *CreateSigningCertificateRequest) Reset() {
-	*x = CreateSigningCertificateRequest{}
-	mi := &file_fulcio_legacy_proto_msgTypes[0]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
+func (x *CreateSigningCertificateRequest) Reset() { _ = "STUB: not implemented"; return }
 
-func (x *CreateSigningCertificateRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
+func (x *CreateSigningCertificateRequest) String() string { _ = "STUB: not implemented"; return "" }
 
-func (*CreateSigningCertificateRequest) ProtoMessage() {}
+func (*CreateSigningCertificateRequest) ProtoMessage() { _ = "STUB: not implemented"; return }
 
 func (x *CreateSigningCertificateRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_fulcio_legacy_proto_msgTypes[0]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
+	_ = "STUB: not implemented"
+	return *new(protoreflect.Message)
 }
 
 // Deprecated: Use CreateSigningCertificateRequest.ProtoReflect.Descriptor instead.
 func (*CreateSigningCertificateRequest) Descriptor() ([]byte, []int) {
-	return file_fulcio_legacy_proto_rawDescGZIP(), []int{0}
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
 // Deprecated: Marked as deprecated in fulcio_legacy.proto.
 func (x *CreateSigningCertificateRequest) GetPublicKey() *PublicKey {
-	if x != nil {
-		return x.PublicKey
-	}
+	_ = "STUB: not implemented"
 	return nil
 }
 
 // Deprecated: Marked as deprecated in fulcio_legacy.proto.
 func (x *CreateSigningCertificateRequest) GetSignedEmailAddress() []byte {
-	if x != nil {
-		return x.SignedEmailAddress
-	}
+	_ = "STUB: not implemented"
 	return nil
 }
 
 // Deprecated: Marked as deprecated in fulcio_legacy.proto.
 func (x *CreateSigningCertificateRequest) GetCertificateSigningRequest() []byte {
-	if x != nil {
-		return x.CertificateSigningRequest
-	}
+	_ = "STUB: not implemented"
 	return nil
 }
 
@@ -134,51 +114,25 @@ type PublicKey struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *PublicKey) Reset() {
-	*x = PublicKey{}
-	mi := &file_fulcio_legacy_proto_msgTypes[1]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
+func (x *PublicKey) Reset() { _ = "STUB: not implemented"; return }
 
-func (x *PublicKey) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
+func (x *PublicKey) String() string { _ = "STUB: not implemented"; return "" }
 
-func (*PublicKey) ProtoMessage() {}
+func (*PublicKey) ProtoMessage() { _ = "STUB: not implemented"; return }
 
 func (x *PublicKey) ProtoReflect() protoreflect.Message {
-	mi := &file_fulcio_legacy_proto_msgTypes[1]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
+	_ = "STUB: not implemented"
+	return *new(protoreflect.Message)
 }
 
 // Deprecated: Use PublicKey.ProtoReflect.Descriptor instead.
-func (*PublicKey) Descriptor() ([]byte, []int) {
-	return file_fulcio_legacy_proto_rawDescGZIP(), []int{1}
-}
+func (*PublicKey) Descriptor() ([]byte, []int) { _ = "STUB: not implemented"; return nil, nil }
 
 // Deprecated: Marked as deprecated in fulcio_legacy.proto.
-func (x *PublicKey) GetAlgorithm() string {
-	if x != nil {
-		return x.Algorithm
-	}
-	return ""
-}
+func (x *PublicKey) GetAlgorithm() string { _ = "STUB: not implemented"; return "" }
 
 // Deprecated: Marked as deprecated in fulcio_legacy.proto.
-func (x *PublicKey) GetContent() []byte {
-	if x != nil {
-		return x.Content
-	}
-	return nil
-}
+func (x *PublicKey) GetContent() []byte { _ = "STUB: not implemented"; return nil }
 
 var File_fulcio_legacy_proto protoreflect.FileDescriptor
 
@@ -206,12 +160,7 @@ var (
 	file_fulcio_legacy_proto_rawDescData []byte
 )
 
-func file_fulcio_legacy_proto_rawDescGZIP() []byte {
-	file_fulcio_legacy_proto_rawDescOnce.Do(func() {
-		file_fulcio_legacy_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_fulcio_legacy_proto_rawDesc), len(file_fulcio_legacy_proto_rawDesc)))
-	})
-	return file_fulcio_legacy_proto_rawDescData
-}
+func file_fulcio_legacy_proto_rawDescGZIP() []byte { _ = "STUB: not implemented"; return nil }
 
 var file_fulcio_legacy_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_fulcio_legacy_proto_goTypes = []any{
@@ -233,26 +182,5 @@ var file_fulcio_legacy_proto_depIdxs = []int32{
 	0, // [0:1] is the sub-list for field type_name
 }
 
-func init() { file_fulcio_legacy_proto_init() }
-func file_fulcio_legacy_proto_init() {
-	if File_fulcio_legacy_proto != nil {
-		return
-	}
-	type x struct{}
-	out := protoimpl.TypeBuilder{
-		File: protoimpl.DescBuilder{
-			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
-			RawDescriptor: unsafe.Slice(unsafe.StringData(file_fulcio_legacy_proto_rawDesc), len(file_fulcio_legacy_proto_rawDesc)),
-			NumEnums:      0,
-			NumMessages:   2,
-			NumExtensions: 0,
-			NumServices:   1,
-		},
-		GoTypes:           file_fulcio_legacy_proto_goTypes,
-		DependencyIndexes: file_fulcio_legacy_proto_depIdxs,
-		MessageInfos:      file_fulcio_legacy_proto_msgTypes,
-	}.Build()
-	File_fulcio_legacy_proto = out.File
-	file_fulcio_legacy_proto_goTypes = nil
-	file_fulcio_legacy_proto_depIdxs = nil
-}
+func init()                          { file_fulcio_legacy_proto_init() }
+func file_fulcio_legacy_proto_init() { _ = "STUB: not implemented"; return }

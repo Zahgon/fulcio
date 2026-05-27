@@ -17,8 +17,6 @@ package certificate
 import (
 	"crypto/x509/pkix"
 	"encoding/asn1"
-	"errors"
-	"fmt"
 )
 
 var (
@@ -143,333 +141,33 @@ type Extensions struct {
 }
 
 func (e Extensions) Render() ([]pkix.Extension, error) {
-	var exts []pkix.Extension
+	_ = "STUB: not implemented"
+	return nil,
 
-	// BEGIN: Deprecated
-	if e.Issuer != "" {
-		// deprecated issuer extension due to incorrect encoding
-		exts = append(exts, pkix.Extension{
-			Id:    OIDIssuer,
-			Value: []byte(e.Issuer),
-		})
-	} else {
-		return nil, errors.New("extensions must have a non-empty issuer url")
-	}
-	if e.GithubWorkflowTrigger != "" {
-		exts = append(exts, pkix.Extension{
-			Id:    OIDGitHubWorkflowTrigger,
-			Value: []byte(e.GithubWorkflowTrigger),
-		})
-	}
-	if e.GithubWorkflowSHA != "" {
-		exts = append(exts, pkix.Extension{
-			Id:    OIDGitHubWorkflowSHA,
-			Value: []byte(e.GithubWorkflowSHA),
-		})
-	}
-	if e.GithubWorkflowName != "" {
-		exts = append(exts, pkix.Extension{
-			Id:    OIDGitHubWorkflowName,
-			Value: []byte(e.GithubWorkflowName),
-		})
-	}
-	if e.GithubWorkflowRepository != "" {
-		exts = append(exts, pkix.Extension{
-			Id:    OIDGitHubWorkflowRepository,
-			Value: []byte(e.GithubWorkflowRepository),
-		})
-	}
-	if e.GithubWorkflowRef != "" {
-		exts = append(exts, pkix.Extension{
-			Id:    OIDGitHubWorkflowRef,
-			Value: []byte(e.GithubWorkflowRef),
-		})
-	}
-	// END: Deprecated
-
-	// duplicate issuer with correct RFC 5280 encoding
-	if e.Issuer != "" {
-		// construct DER encoding of issuer string
-		val, err := asn1.MarshalWithParams(e.Issuer, "utf8")
-		if err != nil {
-			return nil, err
-		}
-		exts = append(exts, pkix.Extension{
-			Id:    OIDIssuerV2,
-			Value: val,
-		})
-	} else {
-		return nil, errors.New("extensions must have a non-empty issuer url")
-	}
-
-	if e.BuildSignerURI != "" {
-		val, err := asn1.MarshalWithParams(e.BuildSignerURI, "utf8")
-		if err != nil {
-			return nil, err
-		}
-		exts = append(exts, pkix.Extension{
-			Id:    OIDBuildSignerURI,
-			Value: val,
-		})
-	}
-	if e.BuildSignerDigest != "" {
-		val, err := asn1.MarshalWithParams(e.BuildSignerDigest, "utf8")
-		if err != nil {
-			return nil, err
-		}
-		exts = append(exts, pkix.Extension{
-			Id:    OIDBuildSignerDigest,
-			Value: val,
-		})
-	}
-	if e.RunnerEnvironment != "" {
-		val, err := asn1.MarshalWithParams(e.RunnerEnvironment, "utf8")
-		if err != nil {
-			return nil, err
-		}
-		exts = append(exts, pkix.Extension{
-			Id:    OIDRunnerEnvironment,
-			Value: val,
-		})
-	}
-	if e.SourceRepositoryURI != "" {
-		val, err := asn1.MarshalWithParams(e.SourceRepositoryURI, "utf8")
-		if err != nil {
-			return nil, err
-		}
-		exts = append(exts, pkix.Extension{
-			Id:    OIDSourceRepositoryURI,
-			Value: val,
-		})
-	}
-	if e.SourceRepositoryDigest != "" {
-		val, err := asn1.MarshalWithParams(e.SourceRepositoryDigest, "utf8")
-		if err != nil {
-			return nil, err
-		}
-		exts = append(exts, pkix.Extension{
-			Id:    OIDSourceRepositoryDigest,
-			Value: val,
-		})
-	}
-	if e.SourceRepositoryRef != "" {
-		val, err := asn1.MarshalWithParams(e.SourceRepositoryRef, "utf8")
-		if err != nil {
-			return nil, err
-		}
-		exts = append(exts, pkix.Extension{
-			Id:    OIDSourceRepositoryRef,
-			Value: val,
-		})
-	}
-	if e.SourceRepositoryIdentifier != "" {
-		val, err := asn1.MarshalWithParams(e.SourceRepositoryIdentifier, "utf8")
-		if err != nil {
-			return nil, err
-		}
-		exts = append(exts, pkix.Extension{
-			Id:    OIDSourceRepositoryIdentifier,
-			Value: val,
-		})
-	}
-	if e.SourceRepositoryOwnerURI != "" {
-		val, err := asn1.MarshalWithParams(e.SourceRepositoryOwnerURI, "utf8")
-		if err != nil {
-			return nil, err
-		}
-		exts = append(exts, pkix.Extension{
-			Id:    OIDSourceRepositoryOwnerURI,
-			Value: val,
-		})
-	}
-	if e.SourceRepositoryOwnerIdentifier != "" {
-		val, err := asn1.MarshalWithParams(e.SourceRepositoryOwnerIdentifier, "utf8")
-		if err != nil {
-			return nil, err
-		}
-		exts = append(exts, pkix.Extension{
-			Id:    OIDSourceRepositoryOwnerIdentifier,
-			Value: val,
-		})
-	}
-	if e.BuildConfigURI != "" {
-		val, err := asn1.MarshalWithParams(e.BuildConfigURI, "utf8")
-		if err != nil {
-			return nil, err
-		}
-		exts = append(exts, pkix.Extension{
-			Id:    OIDBuildConfigURI,
-			Value: val,
-		})
-	}
-	if e.BuildConfigDigest != "" {
-		val, err := asn1.MarshalWithParams(e.BuildConfigDigest, "utf8")
-		if err != nil {
-			return nil, err
-		}
-		exts = append(exts, pkix.Extension{
-			Id:    OIDBuildConfigDigest,
-			Value: val,
-		})
-	}
-	if e.BuildTrigger != "" {
-		val, err := asn1.MarshalWithParams(e.BuildTrigger, "utf8")
-		if err != nil {
-			return nil, err
-		}
-		exts = append(exts, pkix.Extension{
-			Id:    OIDBuildTrigger,
-			Value: val,
-		})
-	}
-	if e.RunInvocationURI != "" {
-		val, err := asn1.MarshalWithParams(e.RunInvocationURI, "utf8")
-		if err != nil {
-			return nil, err
-		}
-		exts = append(exts, pkix.Extension{
-			Id:    OIDRunInvocationURI,
-			Value: val,
-		})
-	}
-	if e.SourceRepositoryVisibilityAtSigning != "" {
-		val, err := asn1.MarshalWithParams(e.SourceRepositoryVisibilityAtSigning, "utf8")
-		if err != nil {
-			return nil, err
-		}
-		exts = append(exts, pkix.Extension{
-			Id:    OIDSourceRepositoryVisibilityAtSigning,
-			Value: val,
-		})
-	}
-	if e.DeploymentEnvironment != "" {
-		val, err := asn1.MarshalWithParams(e.DeploymentEnvironment, "utf8")
-		if err != nil {
-			return nil, err
-		}
-		exts = append(exts, pkix.Extension{
-			Id:    OIDDeploymentEnvironment,
-			Value: val,
-		})
-	}
-	if e.Subject != "" {
-		val, err := asn1.MarshalWithParams(e.Subject, "utf8")
-		if err != nil {
-			return nil, err
-		}
-		exts = append(exts, pkix.Extension{
-			Id:    OIDTokenSubject,
-			Value: val,
-		})
-	}
-
-	return exts, nil
+		// BEGIN: Deprecated
+		nil
 }
+
+// deprecated issuer extension due to incorrect encoding
+
+// END: Deprecated
+
+// duplicate issuer with correct RFC 5280 encoding
+
+// construct DER encoding of issuer string
 
 func ParseExtensions(ext []pkix.Extension) (Extensions, error) {
-	out := Extensions{}
-
-	for _, e := range ext {
-		switch {
-		// BEGIN: Deprecated
-		case e.Id.Equal(OIDIssuer):
-			out.Issuer = string(e.Value)
-		case e.Id.Equal(OIDGitHubWorkflowTrigger):
-			out.GithubWorkflowTrigger = string(e.Value)
-		case e.Id.Equal(OIDGitHubWorkflowSHA):
-			out.GithubWorkflowSHA = string(e.Value)
-		case e.Id.Equal(OIDGitHubWorkflowName):
-			out.GithubWorkflowName = string(e.Value)
-		case e.Id.Equal(OIDGitHubWorkflowRepository):
-			out.GithubWorkflowRepository = string(e.Value)
-		case e.Id.Equal(OIDGitHubWorkflowRef):
-			out.GithubWorkflowRef = string(e.Value)
-		// END: Deprecated
-		case e.Id.Equal(OIDIssuerV2):
-			if err := ParseDERString(e.Value, &out.Issuer); err != nil {
-				return Extensions{}, err
-			}
-		case e.Id.Equal(OIDBuildSignerURI):
-			if err := ParseDERString(e.Value, &out.BuildSignerURI); err != nil {
-				return Extensions{}, err
-			}
-		case e.Id.Equal(OIDBuildSignerDigest):
-			if err := ParseDERString(e.Value, &out.BuildSignerDigest); err != nil {
-				return Extensions{}, err
-			}
-		case e.Id.Equal(OIDRunnerEnvironment):
-			if err := ParseDERString(e.Value, &out.RunnerEnvironment); err != nil {
-				return Extensions{}, err
-			}
-		case e.Id.Equal(OIDSourceRepositoryURI):
-			if err := ParseDERString(e.Value, &out.SourceRepositoryURI); err != nil {
-				return Extensions{}, err
-			}
-		case e.Id.Equal(OIDSourceRepositoryDigest):
-			if err := ParseDERString(e.Value, &out.SourceRepositoryDigest); err != nil {
-				return Extensions{}, err
-			}
-		case e.Id.Equal(OIDSourceRepositoryRef):
-			if err := ParseDERString(e.Value, &out.SourceRepositoryRef); err != nil {
-				return Extensions{}, err
-			}
-		case e.Id.Equal(OIDSourceRepositoryIdentifier):
-			if err := ParseDERString(e.Value, &out.SourceRepositoryIdentifier); err != nil {
-				return Extensions{}, err
-			}
-		case e.Id.Equal(OIDSourceRepositoryOwnerURI):
-			if err := ParseDERString(e.Value, &out.SourceRepositoryOwnerURI); err != nil {
-				return Extensions{}, err
-			}
-		case e.Id.Equal(OIDSourceRepositoryOwnerIdentifier):
-			if err := ParseDERString(e.Value, &out.SourceRepositoryOwnerIdentifier); err != nil {
-				return Extensions{}, err
-			}
-		case e.Id.Equal(OIDBuildConfigURI):
-			if err := ParseDERString(e.Value, &out.BuildConfigURI); err != nil {
-				return Extensions{}, err
-			}
-		case e.Id.Equal(OIDBuildConfigDigest):
-			if err := ParseDERString(e.Value, &out.BuildConfigDigest); err != nil {
-				return Extensions{}, err
-			}
-		case e.Id.Equal(OIDBuildTrigger):
-			if err := ParseDERString(e.Value, &out.BuildTrigger); err != nil {
-				return Extensions{}, err
-			}
-		case e.Id.Equal(OIDRunInvocationURI):
-			if err := ParseDERString(e.Value, &out.RunInvocationURI); err != nil {
-				return Extensions{}, err
-			}
-		case e.Id.Equal(OIDSourceRepositoryVisibilityAtSigning):
-			if err := ParseDERString(e.Value, &out.SourceRepositoryVisibilityAtSigning); err != nil {
-				return Extensions{}, err
-			}
-		case e.Id.Equal(OIDDeploymentEnvironment):
-			if err := ParseDERString(e.Value, &out.DeploymentEnvironment); err != nil {
-				return Extensions{}, err
-			}
-		case e.Id.Equal(OIDTokenSubject):
-			if err := ParseDERString(e.Value, &out.Subject); err != nil {
-				return Extensions{}, err
-			}
-		}
-	}
-
-	// We only ever return nil, but leaving error in place so that we can add
-	// more complex parsing of fields in a backwards compatible way if needed.
-	return out, nil
+	_ = "STUB: not implemented"
+	return *new(Extensions), nil
 }
+
+// BEGIN: Deprecated
+
+// END: Deprecated
+
+// We only ever return nil, but leaving error in place so that we can add
+// more complex parsing of fields in a backwards compatible way if needed.
 
 // ParseDERString decodes a DER-encoded string and puts the value in parsedVal.
 // Returns an error if the unmarshalling fails or if there are trailing bytes in the encoding.
-func ParseDERString(val []byte, parsedVal *string) error {
-	rest, err := asn1.Unmarshal(val, parsedVal)
-	if err != nil {
-		return fmt.Errorf("unexpected error unmarshalling DER-encoded string: %v", err)
-	}
-	if len(rest) != 0 {
-		return errors.New("unexpected trailing bytes in DER-encoded string")
-	}
-	return nil
-}
+func ParseDERString(val []byte, parsedVal *string) error { _ = "STUB: not implemented"; return nil }

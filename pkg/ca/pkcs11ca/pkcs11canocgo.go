@@ -18,8 +18,6 @@
 package pkcs11ca
 
 import (
-	"errors"
-
 	"github.com/sigstore/fulcio/pkg/ca/baseca"
 )
 
@@ -35,6 +33,4 @@ type Params struct {
 
 // NewPKCS11CA is a placeholder for erroring with a meaningful message if the
 // binary has been built with CGO_ENABLED=0 tags.
-func NewPKCS11CA(params Params) (*PKCS11CA, error) {
-	return nil, errors.New("binary has been built with no cgo support, PKCS11 not supported")
-}
+func NewPKCS11CA(params Params) (*PKCS11CA, error) { _ = "STUB: not implemented"; return nil, nil }

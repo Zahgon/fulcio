@@ -17,31 +17,9 @@ package app
 
 import (
 	"context"
-	"crypto/tls"
-	"errors"
-	"fmt"
-	"net"
 	"net/http"
-	"os"
-	"os/signal"
-	"strconv"
-	"strings"
 	"sync"
-	"syscall"
-	"time"
 
-	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
-	"github.com/prometheus/client_golang/prometheus/promhttp"
-	"github.com/rs/cors"
-	gw "github.com/sigstore/fulcio/pkg/generated/protobuf"
-	legacy_gw "github.com/sigstore/fulcio/pkg/generated/protobuf/legacy"
-	"github.com/sigstore/fulcio/pkg/log"
-	"github.com/sigstore/fulcio/pkg/server"
-	"github.com/spf13/viper"
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials"
-	"google.golang.org/grpc/credentials/insecure"
-	health "google.golang.org/grpc/health/grpc_health_v1"
 	"google.golang.org/grpc/metadata"
 	"google.golang.org/protobuf/proto"
 )
@@ -52,128 +30,41 @@ type httpServer struct {
 }
 
 func extractOIDCTokenFromAuthHeader(_ context.Context, req *http.Request) metadata.MD {
-	token := strings.Replace(req.Header.Get("Authorization"), "Bearer ", "", 1)
-	return metadata.Pairs(server.MetadataOIDCTokenKey, token)
+	_ = "STUB: not implemented"
+	return *new(metadata.MD)
 }
 
 func createHTTPServer(ctx context.Context, serverEndpoint string, grpcServer, legacyGRPCServer *grpcServer) httpServer {
-	opts := []grpc.DialOption{}
-	if grpcServer.ExposesGRPCTLS() {
-		/* #nosec G402 */ // InsecureSkipVerify is only used for the HTTP server to call the TLS-enabled grpc endpoint.
-		opts = append(opts, grpc.WithTransportCredentials(credentials.NewTLS(&tls.Config{InsecureSkipVerify: true})))
-	} else {
-		opts = append(opts, grpc.WithTransportCredentials(insecure.NewCredentials()))
-	}
-
-	_, port, err := net.SplitHostPort(grpcServer.grpcServerEndpoint)
-	if err != nil {
-		log.Logger.Fatal(err)
-	}
-
-	grpcServerEndpoint := fmt.Sprintf("localhost:%s", port)
-	cc, err := grpc.NewClient(grpcServerEndpoint, opts...)
-	if err != nil {
-		log.Logger.Fatal(err)
-	}
-
-	mux := runtime.NewServeMux(runtime.WithMetadata(extractOIDCTokenFromAuthHeader),
-		runtime.WithForwardResponseOption(setResponseCodeModifier),
-		runtime.WithHealthzEndpoint(health.NewHealthClient(cc)))
-
-	if err := gw.RegisterCAHandlerFromEndpoint(ctx, mux, grpcServerEndpoint, opts); err != nil {
-		log.Logger.Fatal(err)
-	}
-
-	if legacyGRPCServer != nil {
-		endpoint := fmt.Sprintf("unix:%v", legacyGRPCServer.grpcServerEndpoint)
-		// we are connecting over a unix domain socket, therefore we won't ever need TLS
-		unixDomainSocketOpts := []grpc.DialOption{grpc.WithTransportCredentials(insecure.NewCredentials())}
-		if err := legacy_gw.RegisterCAHandlerFromEndpoint(ctx, mux, endpoint, unixDomainSocketOpts); err != nil {
-			log.Logger.Fatal(err)
-		}
-	}
-
-	// Limit request size
-	handler := server.WithMaxBytes(mux, maxMsgSize)
-	handler = promhttp.InstrumentHandlerDuration(server.MetricLatency, handler)
-	handler = promhttp.InstrumentHandlerCounter(server.RequestsCount, handler)
-
-	// enable CORS
-	// cors.Default() configures to accept requests for all domains
-	handler = cors.Default().Handler(handler)
-
-	api := http.Server{
-		Addr:    serverEndpoint,
-		Handler: handler,
-
-		// Timeouts
-		ReadTimeout:       60 * time.Second,
-		ReadHeaderTimeout: 60 * time.Second,
-		WriteTimeout:      60 * time.Second,
-		IdleTimeout:       viper.GetDuration("idle-connection-timeout"),
-	}
-	return httpServer{&api, serverEndpoint}
+	_ = "STUB: not implemented"
+	return *new(httpServer)
 }
 
-func (h httpServer) startListener(wg *sync.WaitGroup) {
-	log.Logger.Infof("listening on http at %s", h.httpServerEndpoint)
+/* #nosec G402 */ // InsecureSkipVerify is only used for the HTTP server to call the TLS-enabled grpc endpoint.
 
-	idleConnsClosed := make(chan struct{})
-	go func() {
-		sigint := make(chan os.Signal, 1)
-		signal.Notify(sigint, syscall.SIGINT, syscall.SIGTERM)
-		<-sigint
+// we are connecting over a unix domain socket, therefore we won't ever need TLS
 
-		// received an interrupt signal, shut down
-		if err := h.Shutdown(context.Background()); err != nil {
-			// error from closing listeners, or context timeout
-			log.Logger.Errorf("HTTP server Shutdown: %v", err)
-		}
-		close(idleConnsClosed)
-		log.Logger.Info("stopped http server")
-	}()
+// Limit request size
 
-	wg.Add(1)
-	go func() {
-		if err := h.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
-			log.Logger.Fatal(err)
-		}
-		<-idleConnsClosed
-		wg.Done()
-		log.Logger.Info("http server shutdown")
-	}()
-}
+// enable CORS
+// cors.Default() configures to accept requests for all domains
+
+// Timeouts
+
+func (h httpServer) startListener(wg *sync.WaitGroup) { _ = "STUB: not implemented"; return }
+
+// received an interrupt signal, shut down
+
+// error from closing listeners, or context timeout
 
 func setResponseCodeModifier(ctx context.Context, w http.ResponseWriter, _ proto.Message) error {
-	md, ok := runtime.ServerMetadataFromContext(ctx)
-	if !ok {
-		return nil
-	}
-
-	// set SCT if present ahead of modifying response code
-	if vals := md.HeaderMD.Get(server.SCTMetadataKey); len(vals) > 0 {
-		delete(md.HeaderMD, server.SCTMetadataKey)
-		delete(w.Header(), "Grpc-Metadata-sct")
-		w.Header().Set("SCT", vals[0])
-	}
-
-	// strip all GRPC response headers
-	for headerKey := range w.Header() {
-		if strings.HasPrefix(headerKey, "Grpc-") {
-			delete(w.Header(), headerKey)
-		}
-	}
-
-	// set http status code
-	if vals := md.HeaderMD.Get(server.HTTPResponseCodeMetadataKey); len(vals) > 0 {
-		code, err := strconv.Atoi(vals[0])
-		if err != nil {
-			return err
-		}
-		// delete the headers to not expose any grpc-metadata in http response
-		delete(md.HeaderMD, server.HTTPResponseCodeMetadataKey)
-		w.WriteHeader(code)
-	}
-
+	_ = "STUB: not implemented"
 	return nil
 }
+
+// set SCT if present ahead of modifying response code
+
+// strip all GRPC response headers
+
+// set http status code
+
+// delete the headers to not expose any grpc-metadata in http response

@@ -17,13 +17,11 @@ package kmsca
 
 import (
 	"context"
-	"crypto"
 	"crypto/x509"
 
 	"github.com/sigstore/fulcio/pkg/ca"
 	"github.com/sigstore/fulcio/pkg/ca/baseca"
 	"github.com/sigstore/sigstore/pkg/signature"
-	"github.com/sigstore/sigstore/pkg/signature/kms"
 
 	// Register the provider-specific plugins
 	_ "github.com/sigstore/sigstore/pkg/signature/kms/aws"
@@ -37,25 +35,6 @@ type kmsCA struct {
 }
 
 func NewKMSCA(ctx context.Context, kmsKey string, certs []*x509.Certificate, opts ...signature.RPCOption) (ca.CertificateAuthority, error) {
-	var ica kmsCA
-
-	kmsSigner, err := kms.Get(ctx, kmsKey, crypto.SHA256, opts...)
-	if err != nil {
-		return nil, err
-	}
-	signer, _, err := kmsSigner.CryptoSigner(ctx, func(_ error) {})
-	if err != nil {
-		return nil, err
-	}
-
-	sc := ca.SignerCerts{}
-	ica.SignerWithChain = &sc
-
-	sc.Signer = signer
-	sc.Certs = certs
-	if err := ca.VerifyCertChain(sc.Certs, sc.Signer); err != nil {
-		return nil, err
-	}
-
-	return &ica, nil
+	_ = "STUB: not implemented"
+	return *new(ca.CertificateAuthority), nil
 }

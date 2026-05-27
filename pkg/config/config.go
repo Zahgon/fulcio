@@ -17,27 +17,15 @@ package config
 
 import (
 	"context"
-	"crypto/tls"
-	"crypto/x509"
-	"encoding/json"
-	"errors"
-	"fmt"
 	"net/http"
 	"net/url"
-	"os"
-	"reflect"
 	"regexp"
-	"strings"
-	"text/template"
 	"time"
 
 	"github.com/coreos/go-oidc/v3/oidc"
 	lru "github.com/hashicorp/golang-lru/v2"
 	"github.com/sigstore/fulcio/pkg/certificate"
 	fulciogrpc "github.com/sigstore/fulcio/pkg/generated/protobuf"
-	"github.com/sigstore/fulcio/pkg/log"
-	"github.com/spiffe/go-spiffe/v2/spiffeid"
-	"go.yaml.in/yaml/v3"
 )
 
 const defaultOIDCDiscoveryTimeout = 10 * time.Second
@@ -58,17 +46,8 @@ type bearerTokenTransport struct {
 }
 
 func (t *bearerTokenTransport) RoundTrip(req *http.Request) (*http.Response, error) {
-	req = req.Clone(req.Context())
-	parsedIssuer, err := url.Parse(t.IssuerURL)
-	if err != nil {
-		return nil, err
-	}
-	if req.URL.Host == parsedIssuer.Host {
-		req.Header.Set("Authorization", "Bearer "+t.Token)
-	} else {
-		return nil, fmt.Errorf("issuer URL host %s does not match request URL host %s", parsedIssuer.Host, req.URL.Host)
-	}
-	return t.Transport.RoundTrip(req)
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
 type FulcioConfig struct {
@@ -150,243 +129,76 @@ type OIDCIssuer struct {
 }
 
 func MetaRegex(issuer string) (*regexp.Regexp, error) {
+	_ = "STUB: not implemented"
 	// Quote all of the "meta" characters like `.` to avoid
 	// those literal characters in the URL matching any character.
 	// This will ALSO quote `*`, so we replace the quoted version.
-	quoted := regexp.QuoteMeta(issuer)
-
-	// Replace the quoted `*` with a regular expression that
-	// will match alpha-numeric parts with common additional
-	// "special" characters.
-	replaced := strings.ReplaceAll(quoted, regexp.QuoteMeta("*"), "[-_a-zA-Z0-9]+")
-
-	// Add anchors to the beginning and end of the regular expression
-	// to prevent matching URLs where the issuer is not the host of the URL,
-	// e.g. http://localhost:3000?https://meta-url-issuer.com/*
-	// Resolves GHSA-59jp-pj84-45mr
-	replaced = "^" + replaced + "$"
-
-	// Compile into a regular expression.
-	return regexp.Compile(replaced)
+	return nil, nil
 }
+
+// Replace the quoted `*` with a regular expression that
+// will match alpha-numeric parts with common additional
+// "special" characters.
+
+// Add anchors to the beginning and end of the regular expression
+// to prevent matching URLs where the issuer is not the host of the URL,
+// e.g. http://localhost:3000?https://meta-url-issuer.com/*
+// Resolves GHSA-59jp-pj84-45mr
+
+// Compile into a regular expression.
 
 // GetIssuer looks up the issuer configuration for an `issuerURL`
 // coming from an incoming OIDC token.  If no matching configuration
 // is found, then it returns `false`.
 func (fc *FulcioConfig) GetIssuer(issuerURL string) (OIDCIssuer, bool) {
-	iss, ok := fc.OIDCIssuers[issuerURL]
-	if ok {
-		return iss, ok
-	}
-
-	for meta, iss := range fc.MetaIssuers {
-		re, err := MetaRegex(meta)
-		if err != nil {
-			continue // Shouldn't happen, we check parsing the config
-		}
-		if re.MatchString(issuerURL) {
-			// If it matches, then return a concrete OIDCIssuer
-			// configuration for this issuer URL.
-			return OIDCIssuer{
-				IssuerURL:             issuerURL,
-				ClientID:              iss.ClientID,
-				Type:                  iss.Type,
-				IssuerClaim:           iss.IssuerClaim,
-				SubjectDomain:         iss.SubjectDomain,
-				CIProvider:            iss.CIProvider,
-				SkipEmailVerification: iss.SkipEmailVerification,
-				CACert:                iss.CACert,
-			}, true
-		}
-	}
-
-	return OIDCIssuer{}, false
+	_ = "STUB: not implemented"
+	return *new(OIDCIssuer), false
 }
+
+// Shouldn't happen, we check parsing the config
+
+// If it matches, then return a concrete OIDCIssuer
+// configuration for this issuer URL.
 
 // GetVerifier fetches a token verifier for the given `issuerURL`
 // coming from an incoming OIDC token.  If no matching configuration
 // is found, then it returns `false`.
 func (fc *FulcioConfig) GetVerifier(issuerURL string, opts ...InsecureOIDCConfigOption) (*oidc.IDTokenVerifier, bool) {
-	iss, ok := fc.GetIssuer(issuerURL)
-	if !ok {
-		return nil, false
-	}
-	cfg := &oidc.Config{ClientID: iss.ClientID}
-	for _, o := range opts {
-		o(cfg)
-	}
-	// Look up our fixed issuer verifiers
-	v, ok := fc.verifiers[issuerURL]
-	if ok {
-		for _, c := range v {
-			if reflect.DeepEqual(c.Config, cfg) {
-				return c.IDTokenVerifier, true
-			}
-		}
-	}
-
-	// Look in the LRU cache for a verifier
-	v, ok = fc.lru.Get(issuerURL)
-	if ok {
-		for _, c := range v {
-			if reflect.DeepEqual(c.Config, cfg) {
-				return c.IDTokenVerifier, true
-			}
-		}
-	}
-
-	// If this issuer hasn't been recently used, or we have special config options, then create a new verifier
-	// and add it to the LRU cache.
-
-	client, err := httpClientForIssuer(fc, iss)
-	if err != nil {
-		log.Logger.Warnf("error building http client for issuer %q: %s", iss.IssuerURL, err)
-		return nil, false
-	}
-
-	ctx, cancel := context.WithTimeout(context.Background(), defaultOIDCDiscoveryTimeout)
-	defer cancel()
-
-	provider, err := oidc.NewProvider(oidc.ClientContext(ctx, client), issuerURL)
-	if err != nil {
-		log.Logger.Errorf("Failed to create provider for issuer URL %q: %v", issuerURL, err)
-		return nil, false
-	}
-
-	vwf := &verifierWithConfig{provider.Verifier(cfg), cfg}
-	if v == nil {
-		v = []*verifierWithConfig{vwf}
-	} else {
-		v = append(v, vwf)
-	}
-
-	fc.lru.Add(issuerURL, v)
-	return vwf.IDTokenVerifier, true
+	_ = "STUB: not implemented"
+	return nil, false
 }
+
+// Look up our fixed issuer verifiers
+
+// Look in the LRU cache for a verifier
+
+// If this issuer hasn't been recently used, or we have special config options, then create a new verifier
+// and add it to the LRU cache.
 
 type InsecureOIDCConfigOption func(opt *oidc.Config)
 
 func WithSkipExpiryCheck() InsecureOIDCConfigOption {
-	return func(c *oidc.Config) {
-		c.SkipExpiryCheck = true
-	}
+	_ = "STUB: not implemented"
+	return *new(InsecureOIDCConfigOption)
 }
 
 // ToIssuers returns a proto representation of the OIDC issuer configuration.
-func (fc *FulcioConfig) ToIssuers() []*fulciogrpc.OIDCIssuer {
-	var issuers []*fulciogrpc.OIDCIssuer
+func (fc *FulcioConfig) ToIssuers() []*fulciogrpc.OIDCIssuer { _ = "STUB: not implemented"; return nil }
 
-	for _, cfgIss := range fc.OIDCIssuers {
-		issuer := &fulciogrpc.OIDCIssuer{
-			Issuer:                &fulciogrpc.OIDCIssuer_IssuerUrl{IssuerUrl: cfgIss.IssuerURL},
-			Audience:              cfgIss.ClientID,
-			SpiffeTrustDomain:     cfgIss.SPIFFETrustDomain,
-			ChallengeClaim:        issuerToChallengeClaim(cfgIss.Type, cfgIss.ChallengeClaim),
-			IssuerType:            cfgIss.Type.String(),
-			SubjectDomain:         cfgIss.SubjectDomain,
-			SkipEmailVerification: cfgIss.SkipEmailVerification,
-		}
-		issuers = append(issuers, issuer)
-	}
-
-	for metaIss, cfgIss := range fc.MetaIssuers {
-		issuer := &fulciogrpc.OIDCIssuer{
-			Issuer:                &fulciogrpc.OIDCIssuer_WildcardIssuerUrl{WildcardIssuerUrl: metaIss},
-			Audience:              cfgIss.ClientID,
-			SpiffeTrustDomain:     cfgIss.SPIFFETrustDomain,
-			ChallengeClaim:        issuerToChallengeClaim(cfgIss.Type, cfgIss.ChallengeClaim),
-			IssuerType:            cfgIss.Type.String(),
-			SubjectDomain:         cfgIss.SubjectDomain,
-			SkipEmailVerification: cfgIss.SkipEmailVerification,
-		}
-		issuers = append(issuers, issuer)
-	}
-
-	return issuers
-}
-
-func noRedirectClient(client *http.Client) *http.Client {
-	client.CheckRedirect = func(req *http.Request, via []*http.Request) error {
-		if len(via) > 0 && req.URL.Host != via[0].URL.Host {
-			return fmt.Errorf("oidc: redirect to different host %q blocked", req.URL.Host)
-		}
-		return nil
-	}
-	return client
-}
+func noRedirectClient(client *http.Client) *http.Client { _ = "STUB: not implemented"; return nil }
 
 func httpClientForIssuer(fc *FulcioConfig, iss OIDCIssuer) (*http.Client, error) {
-	transportProvider := func(transport *http.Transport) http.RoundTripper {
-		return transport
-	}
-
-	_, hasK8SIssuer := fc.GetIssuer(k8sIssuerURL)
-	if iss.Type == IssuerTypeKubernetes && hasK8SIssuer && iss.IssuerURL == k8sIssuerURL {
-		// Add the Kubernetes cluster's CA to the client's CA pool
-		certs, err := os.ReadFile(k8sCA)
-		if err != nil {
-			return nil, fmt.Errorf("unable to read cluster CA file: %w", err)
-		}
-		iss.CACert = string(certs)
-
-		if _, err := os.Stat(k8sTokenFile); err == nil {
-			// add the authentication header
-			tokenBytes, err := os.ReadFile(k8sTokenFile)
-			if err != nil {
-				return nil, fmt.Errorf("unable to read cluster token file: %w", err)
-			}
-			transportProvider = func(transport *http.Transport) http.RoundTripper {
-				return &bearerTokenTransport{
-					Transport: transport,
-					Token:     string(tokenBytes),
-					IssuerURL: iss.IssuerURL,
-				}
-			}
-		} else {
-			if errors.Is(err, os.ErrNotExist) {
-				log.Logger.Warnf("Kubernetes token file can't be found on path: %s", k8sTokenFile)
-			} else {
-				return nil, err
-			}
-		}
-	}
-
-	if iss.CACert != "" {
-		rootCAs, _ := x509.SystemCertPool()
-		if rootCAs == nil {
-			rootCAs = x509.NewCertPool()
-		}
-		if ok := rootCAs.AppendCertsFromPEM([]byte(iss.CACert)); !ok {
-			return nil, fmt.Errorf("failed to append custom CA cert for issuer URL %q", iss.IssuerURL)
-		}
-
-		transport := &http.Transport{
-			TLSClientConfig: &tls.Config{
-				RootCAs:    rootCAs,
-				MinVersion: tls.VersionTLS12,
-			},
-		}
-		return noRedirectClient(&http.Client{Transport: transportProvider(transport)}), nil
-	}
-	return noRedirectClient(&http.Client{Transport: http.DefaultTransport}), nil
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
-func (fc *FulcioConfig) prepare() error {
-	fc.verifiers = make(map[string][]*verifierWithConfig, len(fc.OIDCIssuers))
-	for _, iss := range fc.OIDCIssuers {
-		if err := fc.insertVerifier(iss); err != nil {
-			log.Logger.Errorf("error creating provider for issuer URL %q: %v", iss.IssuerURL, err)
-			continue
-		}
-	}
+// Add the Kubernetes cluster's CA to the client's CA pool
 
-	cache, err := lru.New2Q[string, []*verifierWithConfig](100 /* size */)
-	if err != nil {
-		return fmt.Errorf("lru: %w", err)
-	}
-	fc.lru = cache
-	return nil
-}
+// add the authentication header
+
+func (fc *FulcioConfig) prepare() error { _ = "STUB: not implemented"; return nil }
+
+/* size */
 
 var (
 	k8sCA = "/var/run/fulcio/ca.crt"
@@ -399,28 +211,11 @@ var (
 	k8sIssuerURL = "https://kubernetes.default.svc"
 )
 
-func (fc *FulcioConfig) insertVerifier(iss OIDCIssuer) error {
-	client, err := httpClientForIssuer(fc, iss)
-	if err != nil {
-		return err
-	}
-
-	ctx, cancel := context.WithTimeout(context.Background(), defaultOIDCDiscoveryTimeout)
-	defer cancel()
-	provider, err := oidc.NewProvider(oidc.ClientContext(ctx, client), iss.IssuerURL)
-	if err != nil {
-		return err
-	}
-	cfg := &oidc.Config{ClientID: iss.ClientID}
-	fc.verifiers[iss.IssuerURL] = []*verifierWithConfig{{provider.Verifier(cfg), cfg}}
-	return nil
-}
+func (fc *FulcioConfig) insertVerifier(iss OIDCIssuer) error { _ = "STUB: not implemented"; return nil }
 
 type IssuerType string
 
-func (it IssuerType) String() string {
-	return string(it)
-}
+func (it IssuerType) String() string { _ = "STUB: not implemented"; return "" }
 
 const (
 	IssuerTypeBuildkiteJob      = "buildkite-job"
@@ -437,126 +232,32 @@ const (
 )
 
 func parseConfig(b []byte) (cfg *FulcioConfig, err error) {
-	cfg = &FulcioConfig{}
-	if err := json.Unmarshal(b, cfg); err != nil {
-		if err = yaml.Unmarshal(b, cfg); err != nil {
-			return nil, fmt.Errorf("unmarshal: %w", err)
-		}
-	}
-
-	return cfg, nil
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
-func validateConfig(conf *FulcioConfig) error {
-	if conf == nil {
-		return errors.New("nil config")
-	}
+func validateConfig(conf *FulcioConfig) error { _ = "STUB: not implemented"; return nil }
 
-	for _, issuer := range conf.OIDCIssuers {
-		if issuer.CACert != "" {
-			rootCAs := x509.NewCertPool()
-			if ok := rootCAs.AppendCertsFromPEM([]byte(issuer.CACert)); !ok {
-				return fmt.Errorf("failed to parse CA certificate for issuer %s", issuer.IssuerURL)
-			}
-		}
+// verify that trust domain is valid
 
-		if issuer.IssuerClaim != "" && issuer.Type != IssuerTypeEmail {
-			return errors.New("only email issuers can use issuer claim mapping")
-		}
-		if issuer.Type == IssuerTypeSpiffe {
-			if issuer.SPIFFETrustDomain == "" {
-				return errors.New("spiffe issuer must have SPIFFETrustDomain set")
-			}
-			// verify that trust domain is valid
-			if _, err := spiffeid.TrustDomainFromString(issuer.SPIFFETrustDomain); err != nil {
-				return errors.New("spiffe trust domain is invalid")
-			}
-		}
-		if issuer.Type == IssuerTypeURI {
-			if issuer.SubjectDomain == "" {
-				return errors.New("uri issuer must have SubjectDomain set")
-			}
-			uDomain, err := url.Parse(issuer.SubjectDomain)
-			if err != nil {
-				return err
-			}
-			if uDomain.Scheme == "" {
-				return errors.New("SubjectDomain for uri must contain scheme")
-			}
-			uIssuer, err := url.Parse(issuer.IssuerURL)
-			if err != nil {
-				return err
-			}
-			if uIssuer.Scheme == "" {
-				return errors.New("issuer for uri must contain scheme")
-			}
-			// The domain in the configuration must match the domain (excluding the subdomain) of the issuer
-			// In order to declare this configuration, a test must have been done to prove ownership
-			// over both the issuer and domain configuration values.
-			// Valid examples:
-			// * SubjectDomain = https://example.com, IssuerURL = https://accounts.example.com
-			// * SubjectDomain = https://accounts.example.com, IssuerURL = https://accounts.example.com
-			// * SubjectDomain = https://users.example.com, IssuerURL = https://accounts.example.com
-			if err := isURISubjectAllowed(uDomain, uIssuer); err != nil {
-				return err
-			}
-		}
-		if issuer.Type == IssuerTypeUsername {
-			if issuer.SubjectDomain == "" {
-				return errors.New("username issuer must have SubjectDomain set")
-			}
-			uDomain, err := url.Parse(issuer.SubjectDomain)
-			if err != nil {
-				return err
-			}
-			if uDomain.Scheme != "" {
-				return errors.New("SubjectDomain for username should not contain scheme")
-			}
-			uIssuer, err := url.Parse(issuer.IssuerURL)
-			if err != nil {
-				return err
-			}
-			if uIssuer.Scheme == "" {
-				return errors.New("issuer for username must contain scheme")
-			}
-			// The domain in the configuration must match the domain (excluding the subdomain) of the issuer
-			// In order to declare this configuration, a test must have been done to prove ownership
-			// over both the issuer and domain configuration values.
-			// Valid examples:
-			// * SubjectDomain = example.com, IssuerURL = https://accounts.example.com
-			// * SubjectDomain = accounts.example.com, IssuerURL = https://accounts.example.com
-			// * SubjectDomain = users.example.com, IssuerURL = https://accounts.example.com
-			if err := validateAllowedDomain(issuer.SubjectDomain, uIssuer.Hostname()); err != nil {
-				return err
-			}
-		}
+// The domain in the configuration must match the domain (excluding the subdomain) of the issuer
+// In order to declare this configuration, a test must have been done to prove ownership
+// over both the issuer and domain configuration values.
+// Valid examples:
+// * SubjectDomain = https://example.com, IssuerURL = https://accounts.example.com
+// * SubjectDomain = https://accounts.example.com, IssuerURL = https://accounts.example.com
+// * SubjectDomain = https://users.example.com, IssuerURL = https://accounts.example.com
 
-		if issuerToChallengeClaim(issuer.Type, issuer.ChallengeClaim) == "" {
-			return errors.New("issuer missing challenge claim")
-		}
-	}
+// The domain in the configuration must match the domain (excluding the subdomain) of the issuer
+// In order to declare this configuration, a test must have been done to prove ownership
+// over both the issuer and domain configuration values.
+// Valid examples:
+// * SubjectDomain = example.com, IssuerURL = https://accounts.example.com
+// * SubjectDomain = accounts.example.com, IssuerURL = https://accounts.example.com
+// * SubjectDomain = users.example.com, IssuerURL = https://accounts.example.com
 
-	for _, metaIssuer := range conf.MetaIssuers {
-		if metaIssuer.CACert != "" {
-			rootCAs := x509.NewCertPool()
-			if ok := rootCAs.AppendCertsFromPEM([]byte(metaIssuer.CACert)); !ok {
-				return fmt.Errorf("failed to parse CA certificate for meta issuer %s", metaIssuer.IssuerURL)
-			}
-		}
-
-		if metaIssuer.Type == IssuerTypeSpiffe {
-			// This would establish a many to one relationship for OIDC issuers
-			// to trust domains so we fail early and reject this configuration.
-			return errors.New("SPIFFE meta issuers not supported")
-		}
-
-		if issuerToChallengeClaim(metaIssuer.Type, metaIssuer.ChallengeClaim) == "" {
-			return errors.New("issuer missing challenge claim")
-		}
-	}
-
-	return validateCIIssuerMetadata(conf)
-}
+// This would establish a many to one relationship for OIDC issuers
+// to trust domains so we fail early and reject this configuration.
 
 var DefaultConfig = &FulcioConfig{
 	OIDCIssuers: map[string]OIDCIssuer{
@@ -582,144 +283,42 @@ var DefaultConfig = &FulcioConfig{
 type configKey struct{}
 
 func With(ctx context.Context, cfg *FulcioConfig) context.Context {
-	ctx = context.WithValue(ctx, configKey{}, cfg)
-	return ctx
+	_ = "STUB: not implemented"
+	return *new(context.Context)
 }
 
-func FromContext(ctx context.Context) *FulcioConfig {
-	untyped := ctx.Value(configKey{})
-	if untyped == nil {
-		return nil
-	}
-	return untyped.(*FulcioConfig)
-}
+func FromContext(ctx context.Context) *FulcioConfig { _ = "STUB: not implemented"; return nil }
 
 // It checks that the templates defined are parseable
 // We should check it during the service bootstrap to avoid errors further
 func validateCIIssuerMetadata(fulcioConfig *FulcioConfig) error {
-	checkParse := func(temp string) error {
-		t := template.New("").Option("missingkey=error")
-		_, err := t.Parse(temp)
-		return err
-	}
-
-	for _, ciIssuerMetadata := range fulcioConfig.CIIssuerMetadata {
-		v := reflect.ValueOf(ciIssuerMetadata.ExtensionTemplates)
-		for i := range v.NumField() {
-			s := v.Field(i).String()
-			err := checkParse(s)
-			if err != nil {
-				return err
-			}
-		}
-
-		err := checkParse(ciIssuerMetadata.SubjectAlternativeNameTemplate)
-		if err != nil {
-			return err
-		}
-	}
+	_ = "STUB: not implemented"
 	return nil
 }
 
 // Load a config from disk, or use defaults
-func Load(configPath string) (*FulcioConfig, error) {
-	if _, err := os.Stat(configPath); os.IsNotExist(err) {
-		log.Logger.Infof("No config at %s, using defaults: %v", configPath, DefaultConfig)
-		config := DefaultConfig
-		if err := config.prepare(); err != nil {
-			return nil, err
-		}
-		return config, nil
-	}
-	b, err := os.ReadFile(configPath)
-	if err != nil {
-		return nil, fmt.Errorf("read file: %w", err)
-	}
-	return Read(b)
-}
+func Load(configPath string) (*FulcioConfig, error) { _ = "STUB: not implemented"; return nil, nil }
 
 // Read parses the bytes of a config
-func Read(b []byte) (*FulcioConfig, error) {
-	config, err := parseConfig(b)
-	if err != nil {
-		return nil, fmt.Errorf("parse: %w", err)
-	}
-
-	err = validateConfig(config)
-	if err != nil {
-		return nil, fmt.Errorf("validate: %w", err)
-	}
-
-	if err := config.prepare(); err != nil {
-		return nil, err
-	}
-	return config, nil
-}
+func Read(b []byte) (*FulcioConfig, error) { _ = "STUB: not implemented"; return nil, nil }
 
 // isURISubjectAllowed compares the subject and issuer URIs,
 // returning an error if the scheme or the hostnames do not match
-func isURISubjectAllowed(subject, issuer *url.URL) error {
-	if subject.Scheme != issuer.Scheme {
-		return fmt.Errorf("subject (%s) and issuer (%s) URI schemes do not match", subject.Scheme, issuer.Scheme)
-	}
-
-	return validateAllowedDomain(subject.Hostname(), issuer.Hostname())
-}
+func isURISubjectAllowed(subject, issuer *url.URL) error { _ = "STUB: not implemented"; return nil }
 
 // validateAllowedDomain compares two hostnames, returning an error if the
 // top-level and second-level domains do not match
 // TODO: This does not work for domains that end in co.jp or co.uk. We should consider
 // using eTLDs, or removing this validation when we can challenge domain ownership.
 func validateAllowedDomain(subjectHostname, issuerHostname string) error {
+	_ = "STUB: not implemented"
 	// If the hostnames exactly match, return early
-	if subjectHostname == issuerHostname {
-		return nil
-	}
-
-	// Compare the top level and second level domains
-	sHostname := strings.Split(subjectHostname, ".")
-	iHostname := strings.Split(issuerHostname, ".")
-	if len(sHostname) < minimumHostnameLength {
-		return fmt.Errorf("URI hostname too short: %s", subjectHostname)
-	}
-	if len(iHostname) < minimumHostnameLength {
-		return fmt.Errorf("URI hostname too short: %s", issuerHostname)
-	}
-	if sHostname[len(sHostname)-1] == iHostname[len(iHostname)-1] &&
-		sHostname[len(sHostname)-2] == iHostname[len(iHostname)-2] {
-		return nil
-	}
-	return fmt.Errorf("hostname top-level and second-level domains do not match: %s, %s", subjectHostname, issuerHostname)
+	return nil
 }
 
+// Compare the top level and second level domains
+
 func issuerToChallengeClaim(issType IssuerType, challengeClaim string) string {
-	if challengeClaim != "" {
-		return challengeClaim
-	}
-	switch issType {
-	case IssuerTypeBuildkiteJob:
-		return "sub"
-	case IssuerTypeGitLabPipeline:
-		return "sub"
-	case IssuerTypeEmail:
-		return "email"
-	case IssuerTypeGithubWorkflow:
-		return "sub"
-	case IssuerTypeCIProvider:
-		return "sub"
-	case IssuerTypeCodefreshWorkflow:
-		return "sub"
-	case IssuerTypeChainguard:
-		return "sub"
-	case IssuerTypeKubernetes:
-		return "sub"
-	case IssuerTypeSpiffe:
-		return "sub"
-	case IssuerTypeURI:
-		return "sub"
-	case IssuerTypeUsername:
-		return "sub"
-	default:
-		return ""
-	}
+	_ = "STUB: not implemented"
+	return ""
 }

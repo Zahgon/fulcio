@@ -16,16 +16,8 @@
 package api
 
 import (
-	"bytes"
-	"encoding/base64"
-	"encoding/json"
-	"encoding/pem"
-	"errors"
-	"fmt"
-	"io"
 	"net/http"
 	"net/url"
-	"path"
 	"time"
 )
 
@@ -78,15 +70,8 @@ type ClientOption func(*clientOptions)
 
 // NewClient creates a new Fulcio API client talking to the provided URL.
 func NewClient(url *url.URL, opts ...ClientOption) LegacyClient {
-	o := makeOptions(opts...)
-
-	return &client{
-		baseURL: url,
-		client: &http.Client{
-			Transport: createRoundTripper(http.DefaultTransport, o),
-			Timeout:   o.Timeout,
-		},
-	}
+	_ = "STUB: not implemented"
+	return *new(LegacyClient)
 }
 
 type client struct {
@@ -98,84 +83,26 @@ var _ LegacyClient = (*client)(nil)
 
 // SigningCert implements Client
 func (c *client) SigningCert(cr CertificateRequest, token string) (*CertificateResponse, error) {
+	_ = "STUB: not implemented"
 	// Construct the API endpoint for this handler
-	endpoint := *c.baseURL
-	endpoint.Path = path.Join(endpoint.Path, signingCertPath)
-
-	b, err := json.Marshal(cr)
-	if err != nil {
-		return nil, fmt.Errorf("marshal: %w", err)
-	}
-
-	req, err := http.NewRequest(http.MethodPost, endpoint.String(), bytes.NewBuffer(b))
-	if err != nil {
-		return nil, fmt.Errorf("request: %w", err)
-	}
-	// Set the authorization header to our OIDC bearer token.
-	req.Header.Set("Authorization", "Bearer "+token)
-	// Set the content-type to reflect we're sending JSON.
-	req.Header.Set("Content-Type", "application/json")
-
-	resp, err := c.client.Do(req)
-	if err != nil {
-		return nil, fmt.Errorf("client: %w", err)
-	}
-	defer resp.Body.Close()
-
-	body, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return nil, fmt.Errorf("%s read: %w", endpoint.String(), err)
-	}
-
-	// The API should return a 201 Created on success.  If we see anything else,
-	// then turn the response body into an error.
-	if resp.StatusCode != http.StatusCreated {
-		return nil, fmt.Errorf("%s %s returned %s: %q", http.MethodPost, endpoint.String(), resp.Status, body)
-	}
-
-	// Extract the SCT from the response header.
-	sct, err := base64.StdEncoding.DecodeString(resp.Header.Get("SCT"))
-	if err != nil {
-		return nil, fmt.Errorf("decode: %w", err)
-	}
-
-	// Split the cert and the chain
-	certBlock, chainPem := pem.Decode(body)
-	if certBlock == nil {
-		return nil, errors.New("did not find a cert from Fulcio")
-	}
-	certPem := pem.EncodeToMemory(certBlock)
-	return &CertificateResponse{
-		CertPEM:  certPem,
-		ChainPEM: chainPem,
-		SCT:      sct,
-	}, nil
+	return nil, nil
 }
 
+// Set the authorization header to our OIDC bearer token.
+
+// Set the content-type to reflect we're sending JSON.
+
+// The API should return a 201 Created on success.  If we see anything else,
+// then turn the response body into an error.
+
+// Extract the SCT from the response header.
+
+// Split the cert and the chain
+
 func (c *client) RootCert() (*RootResponse, error) {
+	_ = "STUB: not implemented"
 	// Construct the API endpoint for this handler
-	endpoint := *c.baseURL
-	endpoint.Path = path.Join(endpoint.Path, rootCertPath)
-
-	req, err := http.NewRequest(http.MethodGet, endpoint.String(), nil)
-	if err != nil {
-		return nil, fmt.Errorf("request: %w", err)
-	}
-	resp, err := c.client.Do(req)
-	if err != nil {
-		return nil, err
-	}
-	defer resp.Body.Close()
-	body, err := io.ReadAll(resp.Body)
-
-	if err != nil {
-		return nil, err
-	}
-
-	if resp.StatusCode != http.StatusOK {
-		return nil, errors.New(string(body))
-	}
-	return &RootResponse{ChainPEM: body}, nil
+	return nil, nil
 }
 
 type clientOptions struct {
@@ -183,30 +110,18 @@ type clientOptions struct {
 	Timeout   time.Duration
 }
 
-func makeOptions(opts ...ClientOption) *clientOptions {
-	o := &clientOptions{
-		UserAgent: "",
-	}
-
-	for _, opt := range opts {
-		opt(o)
-	}
-
-	return o
-}
+func makeOptions(opts ...ClientOption) *clientOptions { _ = "STUB: not implemented"; return nil }
 
 // WithTimeout sets the request timeout for the client
 func WithTimeout(timeout time.Duration) ClientOption {
-	return func(o *clientOptions) {
-		o.Timeout = timeout
-	}
+	_ = "STUB: not implemented"
+	return *new(ClientOption)
 }
 
 // WithUserAgent sets the media type of the signature.
 func WithUserAgent(userAgent string) ClientOption {
-	return func(o *clientOptions) {
-		o.UserAgent = userAgent
-	}
+	_ = "STUB: not implemented"
+	return *new(ClientOption)
 }
 
 type roundTripper struct {
@@ -216,20 +131,13 @@ type roundTripper struct {
 
 // RoundTrip implements `http.RoundTripper`
 func (rt *roundTripper) RoundTrip(req *http.Request) (*http.Response, error) {
-	req.Header.Set("User-Agent", rt.UserAgent)
-	return rt.RoundTripper.RoundTrip(req)
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
 func createRoundTripper(inner http.RoundTripper, o *clientOptions) http.RoundTripper {
-	if inner == nil {
-		inner = http.DefaultTransport
-	}
-	if o.UserAgent == "" {
-		// There's nothing to do...
-		return inner
-	}
-	return &roundTripper{
-		RoundTripper: inner,
-		UserAgent:    o.UserAgent,
-	}
+	_ = "STUB: not implemented"
+	return *new(http.RoundTripper)
 }
+
+// There's nothing to do...

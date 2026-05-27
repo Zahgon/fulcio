@@ -16,24 +16,13 @@
 package main
 
 import (
-	"bytes"
-	"context"
-	"crypto"
-	"crypto/tls"
 	"crypto/x509"
 	"encoding/pem"
 	"fmt"
 	"log"
-	"net/url"
 
 	fulciopb "github.com/sigstore/fulcio/pkg/generated/protobuf"
-	"github.com/sigstore/sigstore/pkg/cryptoutils"
-	"github.com/sigstore/sigstore/pkg/oauthflow"
 	"github.com/sigstore/sigstore/pkg/signature"
-	"github.com/sigstore/sigstore/pkg/signature/options"
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials"
-	"google.golang.org/grpc/credentials/insecure"
 )
 
 var (
@@ -44,60 +33,15 @@ var (
 
 // Some of this is just ripped from cosign
 func GetCert(signer *signature.ECDSASignerVerifier, fc fulciopb.CAClient, oidcIssuer string, oidcClientID string) (*fulciopb.SigningCertificate, error) {
-
-	tok, err := oauthflow.OIDConnect(oidcIssuer, oidcClientID, "", "", oauthflow.DefaultIDTokenGetter)
-	if err != nil {
-		return nil, err
-	}
-
-	// Sign the email address as part of the request
-	b := bytes.NewBuffer([]byte(tok.Subject))
-	proof, err := signer.SignMessage(b, options.WithCryptoSignerOpts(crypto.SHA256))
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	pubBytesPEM, err := cryptoutils.MarshalPublicKeyToPEM(signer.Public())
-	if err != nil {
-		return nil, err
-	}
-	cscr := &fulciopb.CreateSigningCertificateRequest{
-		Credentials: &fulciopb.Credentials{
-			Credentials: &fulciopb.Credentials_OidcIdentityToken{
-				OidcIdentityToken: tok.RawString,
-			},
-		},
-		Key: &fulciopb.CreateSigningCertificateRequest_PublicKeyRequest{
-			PublicKeyRequest: &fulciopb.PublicKeyRequest{
-				PublicKey: &fulciopb.PublicKey{
-					Content: string(pubBytesPEM),
-				},
-				ProofOfPossession: proof,
-			},
-		},
-	}
-	return fc.CreateSigningCertificate(context.Background(), cscr)
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
-func NewClient(fulcioURL string) (fulciopb.CAClient, error) {
-	fulcioServer, err := url.Parse(fulcioURL)
-	if err != nil {
-		return nil, err
-	}
-	dialOpt := grpc.WithTransportCredentials(insecure.NewCredentials())
-	hostWithPort := fmt.Sprintf("%s:80", fulcioServer.Host)
-	if fulcioServer.Scheme == "https" {
-		dialOpt = grpc.WithTransportCredentials(credentials.NewTLS(&tls.Config{
-			MinVersion: tls.VersionTLS12,
-		}))
-		hostWithPort = fmt.Sprintf("%s:443", fulcioServer.Host)
-	}
+// Sign the email address as part of the request
 
-	conn, err := grpc.NewClient(hostWithPort, dialOpt)
-	if err != nil {
-		return nil, err
-	}
-	return fulciopb.NewCAClient(conn), nil
+func NewClient(fulcioURL string) (fulciopb.CAClient, error) {
+	_ = "STUB: not implemented"
+	return *new(fulciopb.CAClient), nil
 }
 
 func main() {

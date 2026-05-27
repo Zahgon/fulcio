@@ -17,10 +17,8 @@ package kubernetes
 import (
 	"context"
 	"crypto/x509"
-	"net/url"
 
 	"github.com/coreos/go-oidc/v3/oidc"
-	"github.com/sigstore/fulcio/pkg/certificate"
 	"github.com/sigstore/fulcio/pkg/identity"
 )
 
@@ -37,69 +35,33 @@ type principal struct {
 }
 
 func PrincipalFromIDToken(_ context.Context, token *oidc.IDToken) (identity.Principal, error) {
-	k8sURI, err := kubernetesToken(token)
-	if err != nil {
-		return nil, err
-	}
-	return principal{
-		subject: token.Subject,
-		issuer:  token.Issuer,
-		uri:     k8sURI,
-	}, nil
+	_ = "STUB: not implemented"
+	return *new(identity.Principal), nil
 }
 
-func (p principal) Name(context.Context) string {
-	return p.subject
-}
+func (p principal) Name(context.Context) string { _ = "STUB: not implemented"; return "" }
 
 func (p principal) Embed(_ context.Context, cert *x509.Certificate) error {
-	parsed, err := url.Parse(p.uri)
-	if err != nil {
-		return err
-	}
-	cert.URIs = []*url.URL{parsed}
-
-	cert.ExtraExtensions, err = certificate.Extensions{
-		Issuer:  p.issuer,
-		Subject: p.subject,
-	}.Render()
-	if err != nil {
-		return err
-	}
-
+	_ = "STUB: not implemented"
 	return nil
 }
 
 func kubernetesToken(token *oidc.IDToken) (string, error) {
+	_ = "STUB: not implemented"
 	// Extract custom claims
-	var claims struct {
-		// "kubernetes.io": {
-		//   "namespace": "default",
-		//   "pod": {
-		// 	    "name": "oidc-test",
-		// 	    "uid": "49ad3572-b3dd-43a6-8d77-5858d3660275"
-		//   },
-		//   "serviceaccount": {
-		// 	    "name": "default",
-		//      "uid": "f5720c1d-e152-4356-a897-11b07aff165d"
-		//   }
-		// }
-		Kubernetes struct {
-			Namespace string `json:"namespace"`
-			Pod       struct {
-				Name string `json:"name"`
-				UID  string `json:"uid"`
-			} `json:"pod"`
-			ServiceAccount struct {
-				Name string `json:"name"`
-				UID  string `json:"uid"`
-			} `json:"serviceaccount"`
-		} `json:"kubernetes.io"`
-	}
-	if err := token.Claims(&claims); err != nil {
-		return "", err
-	}
-
-	// We use this in URIs, so it has to be a URI.
-	return "https://kubernetes.io/namespaces/" + claims.Kubernetes.Namespace + "/serviceaccounts/" + claims.Kubernetes.ServiceAccount.Name, nil
+	return "", nil
 }
+
+// "kubernetes.io": {
+//   "namespace": "default",
+//   "pod": {
+// 	    "name": "oidc-test",
+// 	    "uid": "49ad3572-b3dd-43a6-8d77-5858d3660275"
+//   },
+//   "serviceaccount": {
+// 	    "name": "default",
+//      "uid": "f5720c1d-e152-4356-a897-11b07aff165d"
+//   }
+// }
+
+// We use this in URIs, so it has to be a URI.

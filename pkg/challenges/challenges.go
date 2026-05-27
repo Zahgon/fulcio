@@ -16,98 +16,47 @@
 package challenges
 
 import (
-	"bytes"
 	"context"
 	"crypto"
-	"crypto/x509"
-	"errors"
-	"fmt"
-	"strings"
 
-	"github.com/sigstore/fulcio/pkg/config"
 	"github.com/sigstore/fulcio/pkg/identity"
-	"github.com/sigstore/fulcio/pkg/identity/buildkite"
-	"github.com/sigstore/fulcio/pkg/identity/ciprovider"
-	"github.com/sigstore/fulcio/pkg/identity/email"
-	"github.com/sigstore/fulcio/pkg/identity/github"
-	"github.com/sigstore/fulcio/pkg/identity/gitlabcom"
-	"github.com/sigstore/fulcio/pkg/identity/kubernetes"
-	"github.com/sigstore/fulcio/pkg/identity/spiffe"
-	"github.com/sigstore/fulcio/pkg/identity/uri"
-	"github.com/sigstore/fulcio/pkg/identity/username"
 
 	"github.com/coreos/go-oidc/v3/oidc"
-	"github.com/sigstore/sigstore/pkg/cryptoutils"
 	"github.com/sigstore/sigstore/pkg/signature"
 )
 
 // CheckSignature verifies a challenge, a signature over the subject or email
 // of an OIDC token
 func CheckSignature(pub crypto.PublicKey, proof []byte, subject string) error {
-	verifier, err := signature.LoadDefaultVerifier(pub)
-	if err != nil {
-		return err
-	}
-
-	return CheckSignatureWithVerifier(verifier, proof, subject)
+	_ = "STUB: not implemented"
+	return nil
 }
 
 // CheckSignatureWithVerifier verifies a challenge, a signature over the subject
 // or email of an OIDC token
 func CheckSignatureWithVerifier(verifier signature.Verifier, proof []byte, subject string) error {
-	return verifier.VerifySignature(bytes.NewReader(proof), strings.NewReader(subject))
+	_ = "STUB: not implemented"
+	return nil
 }
 
 func PrincipalFromIDToken(ctx context.Context, tok *oidc.IDToken) (identity.Principal, error) {
-	iss, ok := config.FromContext(ctx).GetIssuer(tok.Issuer)
-	if !ok {
-		return nil, fmt.Errorf("configuration can not be loaded for issuer %v", tok.Issuer)
-	}
-	var principal identity.Principal
-	var err error
-	switch iss.Type {
-	case config.IssuerTypeBuildkiteJob:
-		principal, err = buildkite.JobPrincipalFromIDToken(ctx, tok) // nolint
-	case config.IssuerTypeGitLabPipeline:
-		principal, err = gitlabcom.JobPrincipalFromIDToken(ctx, tok) // nolint
-	case config.IssuerTypeEmail:
-		principal, err = email.PrincipalFromIDToken(ctx, tok)
-	case config.IssuerTypeSpiffe:
-		principal, err = spiffe.PrincipalFromIDToken(ctx, tok)
-	case config.IssuerTypeGithubWorkflow:
-		principal, err = github.WorkflowPrincipalFromIDToken(ctx, tok) // nolint
-	case config.IssuerTypeKubernetes:
-		principal, err = kubernetes.PrincipalFromIDToken(ctx, tok)
-	case config.IssuerTypeURI:
-		principal, err = uri.PrincipalFromIDToken(ctx, tok)
-	case config.IssuerTypeUsername:
-		principal, err = username.PrincipalFromIDToken(ctx, tok)
-	case config.IssuerTypeCIProvider:
-		principal, err = ciprovider.WorkflowPrincipalFromIDToken(ctx, tok)
-	default:
-		return nil, fmt.Errorf("unsupported issuer: %s", iss.Type)
-	}
-	if err != nil {
-		return nil, err
-	}
-
-	return principal, nil
+	_ = "STUB: not implemented"
+	return *new(identity.Principal), nil
 }
+
+// nolint
+
+// nolint
+
+// nolint
 
 // ParsePublicKey parses a PEM or DER encoded public key. Returns an error if
 // decoding fails or if no public key is found.
 func ParsePublicKey(encodedPubKey string) (crypto.PublicKey, error) {
-	if len(encodedPubKey) == 0 {
-		return nil, errors.New("public key not provided")
-	}
-	// try to unmarshal as PEM
-	publicKey, err := cryptoutils.UnmarshalPEMToPublicKey([]byte(encodedPubKey))
-	if err != nil {
-		// try to unmarshal as DER
-		publicKey, err = x509.ParsePKIXPublicKey([]byte(encodedPubKey))
-		if err != nil {
-			return nil, errors.New("error parsing PEM or DER encoded public key")
-		}
-	}
-	return publicKey, err
+	_ = "STUB: not implemented"
+	return *new(crypto.PublicKey), nil
 }
+
+// try to unmarshal as PEM
+
+// try to unmarshal as DER

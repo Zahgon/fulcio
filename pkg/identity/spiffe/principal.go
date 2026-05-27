@@ -17,15 +17,9 @@ package spiffe
 import (
 	"context"
 	"crypto/x509"
-	"errors"
-	"fmt"
-	"net/url"
 
 	"github.com/coreos/go-oidc/v3/oidc"
-	"github.com/sigstore/fulcio/pkg/certificate"
-	"github.com/sigstore/fulcio/pkg/config"
 	"github.com/sigstore/fulcio/pkg/identity"
-	"github.com/spiffe/go-spiffe/v2/spiffeid"
 )
 
 type principal struct {
@@ -37,58 +31,15 @@ type principal struct {
 }
 
 func PrincipalFromIDToken(ctx context.Context, token *oidc.IDToken) (identity.Principal, error) {
-	cfg, ok := config.FromContext(ctx).GetIssuer(token.Issuer)
-	if !ok {
-		return nil, errors.New("invalid configuration for OIDC ID Token issuer")
-	}
-
-	if err := validSpiffeID(token.Subject, cfg.SPIFFETrustDomain); err != nil {
-		return nil, err
-	}
-
-	return principal{
-		id:     token.Subject,
-		issuer: token.Issuer,
-	}, nil
-
+	_ = "STUB: not implemented"
+	return *new(identity.Principal), nil
 }
 
-func validSpiffeID(id, trustDomain string) error {
-	parsedTrustDomain, err := spiffeid.TrustDomainFromString(trustDomain)
-	if err != nil {
-		return fmt.Errorf("unable to parse trust domain from configuration %s: %w", trustDomain, err)
-	}
+func validSpiffeID(id, trustDomain string) error { _ = "STUB: not implemented"; return nil }
 
-	parsedID, err := spiffeid.FromString(id)
-	if err != nil {
-		return fmt.Errorf("invalid spiffe ID provided: %s", id)
-	}
-
-	if parsedID.TrustDomain().Compare(parsedTrustDomain) != 0 {
-		return fmt.Errorf("spiffe ID trust domain %s doesn't match configured trust domain %s", parsedID.TrustDomain(), trustDomain)
-	}
-
-	return nil
-}
-
-func (p principal) Name(_ context.Context) string {
-	return p.id
-}
+func (p principal) Name(_ context.Context) string { _ = "STUB: not implemented"; return "" }
 
 func (p principal) Embed(_ context.Context, cert *x509.Certificate) error {
-	parsed, err := url.Parse(p.id)
-	if err != nil {
-		return err
-	}
-	cert.URIs = []*url.URL{parsed}
-
-	cert.ExtraExtensions, err = certificate.Extensions{
-		Issuer:  p.issuer,
-		Subject: p.id,
-	}.Render()
-	if err != nil {
-		return err
-	}
-
+	_ = "STUB: not implemented"
 	return nil
 }

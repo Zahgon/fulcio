@@ -17,12 +17,8 @@ package buildkite
 import (
 	"context"
 	"crypto/x509"
-	"errors"
-	"fmt"
-	"net/url"
 
 	"github.com/coreos/go-oidc/v3/oidc"
-	"github.com/sigstore/fulcio/pkg/certificate"
 	"github.com/sigstore/fulcio/pkg/identity"
 )
 
@@ -43,49 +39,16 @@ type jobPrincipal struct {
 
 // Deprecated: Use ciprovider.WorkflowPrincipalFromIDToken instead
 func JobPrincipalFromIDToken(_ context.Context, token *oidc.IDToken) (identity.Principal, error) {
-	var claims struct {
-		OrganizationSlug string `json:"organization_slug"`
-		PipelineSlug     string `json:"pipeline_slug"`
-	}
-	if err := token.Claims(&claims); err != nil {
-		return nil, err
-	}
-
-	if claims.OrganizationSlug == "" {
-		return nil, errors.New("missing organization_slug claim in ID token")
-	}
-
-	if claims.PipelineSlug == "" {
-		return nil, errors.New("missing pipeline_slug claim in ID token")
-	}
-
-	return &jobPrincipal{
-		subject: token.Subject,
-		issuer:  token.Issuer,
-		url:     fmt.Sprintf("https://buildkite.com/%s/%s", claims.OrganizationSlug, claims.PipelineSlug),
-	}, nil
+	_ = "STUB: not implemented"
+	return *new(identity.Principal), nil
 }
 
-func (p jobPrincipal) Name(_ context.Context) string {
-	return p.subject
-}
+func (p jobPrincipal) Name(_ context.Context) string { _ = "STUB: not implemented"; return "" }
 
 func (p jobPrincipal) Embed(_ context.Context, cert *x509.Certificate) error {
+	_ = "STUB: not implemented"
 	// Set SubjectAlternativeName to the pipeline URL on the certificate
-	parsed, err := url.Parse(p.url)
-	if err != nil {
-		return err
-	}
-	cert.URIs = []*url.URL{parsed}
-
-	// Embed additional information into custom extensions
-	cert.ExtraExtensions, err = certificate.Extensions{
-		Issuer:  p.issuer,
-		Subject: p.subject,
-	}.Render()
-	if err != nil {
-		return err
-	}
-
 	return nil
 }
+
+// Embed additional information into custom extensions

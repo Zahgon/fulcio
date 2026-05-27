@@ -16,7 +16,6 @@ package identity
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/coreos/go-oidc/v3/oidc"
 	"github.com/sigstore/fulcio/pkg/config"
@@ -26,14 +25,6 @@ import (
 var Authorize = actualAuthorize
 
 func actualAuthorize(ctx context.Context, token string, opts ...config.InsecureOIDCConfigOption) (*oidc.IDToken, error) {
-	issuer, err := extractIssuerURL(token)
-	if err != nil {
-		return nil, err
-	}
-
-	verifier, ok := config.FromContext(ctx).GetVerifier(issuer, opts...)
-	if !ok {
-		return nil, fmt.Errorf("unsupported issuer: %s", issuer)
-	}
-	return verifier.Verify(ctx, token)
+	_ = "STUB: not implemented"
+	return nil, nil
 }

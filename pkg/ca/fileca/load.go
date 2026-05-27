@@ -16,50 +16,10 @@
 package fileca
 
 import (
-	"bytes"
-	"crypto"
-	"crypto/x509"
-	"errors"
-	"os"
-	"path/filepath"
-
 	"github.com/sigstore/fulcio/pkg/ca"
-	"github.com/sigstore/sigstore/pkg/cryptoutils"
-	"go.step.sm/crypto/pemutil"
 )
 
 func loadKeyPair(certPath, keyPath, keyPass string) (*ca.SignerCertsMutex, error) {
-	var (
-		certs []*x509.Certificate
-		err   error
-		key   crypto.Signer
-	)
-
-	data, err := os.ReadFile(filepath.Clean(certPath))
-	if err != nil {
-		return nil, err
-	}
-	certs, err = cryptoutils.LoadCertificatesFromPEM(bytes.NewReader(data))
-	if err != nil {
-		return nil, err
-	}
-
-	{
-		opaqueKey, err := pemutil.Read(keyPath, pemutil.WithPassword([]byte(keyPass)))
-		if err != nil {
-			return nil, err
-		}
-
-		var ok bool
-		key, ok = opaqueKey.(crypto.Signer)
-		if !ok {
-			return nil, errors.New(`fileca: loaded private key can't be used to sign`)
-		}
-	}
-
-	if err := ca.VerifyCertChain(certs, key); err != nil {
-		return nil, err
-	}
-
-	return &ca.SignerCertsMutex{Certs: certs, Signer: key}, nil
+	_ = "STUB: not implemented"
+	return nil, nil
 }

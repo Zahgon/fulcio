@@ -16,9 +16,6 @@ package ca
 
 import (
 	"crypto/x509"
-	"strings"
-
-	"github.com/sigstore/sigstore/pkg/cryptoutils"
 )
 
 type CodeSigningCertificate struct {
@@ -29,67 +26,30 @@ type CodeSigningCertificate struct {
 }
 
 func CreateCSCFromPEM(cert string, chain []string) (*CodeSigningCertificate, error) {
-	var c CodeSigningCertificate
+	_ = "STUB: not implemented"
+	return nil,
 
-	// convert to X509 and store both formats
-	finalCert, err := cryptoutils.UnmarshalCertificatesFromPEM([]byte(cert))
-	if err != nil {
-		return nil, err
-	}
-	c.finalPEM = strings.TrimSpace(cert)
-	c.FinalCertificate = finalCert[0]
-
-	// convert to X509 and store both formats
-	chainBytes := []byte(strings.Join(chain, ""))
-	if len(chainBytes) != 0 {
-		c.FinalChain, err = cryptoutils.UnmarshalCertificatesFromPEM(chainBytes)
-		if err != nil {
-			return nil, err
-		}
-		for _, cert := range chain {
-			c.finalChainPEM = append(c.finalChainPEM, strings.TrimSpace(cert))
-		}
-	}
-	return &c, nil
+		// convert to X509 and store both formats
+		nil
 }
+
+// convert to X509 and store both formats
 
 func CreateCSCFromDER(cert []byte, chain []*x509.Certificate) (*CodeSigningCertificate, error) {
-	var (
-		c   CodeSigningCertificate
-		err error
-	)
-
-	// convert to X509 and store both formats
-	c.finalPEM = strings.TrimSpace(string(cryptoutils.PEMEncode(cryptoutils.CertificatePEMType, cert)))
-	c.FinalCertificate, err = x509.ParseCertificate(cert)
-	if err != nil {
-		return nil, err
-	}
-
-	// convert to X509 and store both formats
-	c.FinalChain = chain
-	for _, chainCert := range c.FinalChain {
-		c.finalChainPEM = append(c.finalChainPEM, strings.TrimSpace(string(cryptoutils.PEMEncode(cryptoutils.CertificatePEMType, chainCert.Raw))))
-	}
-	return &c, nil
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
+// convert to X509 and store both formats
+
+// convert to X509 and store both formats
+
 func (c *CodeSigningCertificate) CertPEM() (string, error) {
-	var err error
-	if c.finalPEM == "" {
-		finalPemBytes, err := cryptoutils.MarshalCertificateToPEM(c.FinalCertificate)
-		if err == nil {
-			c.finalPEM = strings.TrimSpace(string(finalPemBytes))
-		}
-	}
-	return c.finalPEM, err
+	_ = "STUB: not implemented"
+	return "", nil
 }
 
 func (c *CodeSigningCertificate) ChainPEM() ([]string, error) {
-	if c.finalChainPEM == nil && len(c.FinalChain) > 0 {
-		for _, chainCert := range c.FinalChain {
-			c.finalChainPEM = append(c.finalChainPEM, strings.TrimSpace(string(cryptoutils.PEMEncode(cryptoutils.CertificatePEMType, chainCert.Raw))))
-		}
-	}
-	return c.finalChainPEM, nil
+	_ = "STUB: not implemented"
+	return nil, nil
 }

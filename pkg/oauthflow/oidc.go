@@ -16,54 +16,20 @@
 package oauthflow
 
 import (
-	"errors"
-	"fmt"
-
-	"github.com/PaesslerAG/jsonpath"
 	"github.com/coreos/go-oidc/v3/oidc"
 )
 
 type stringAsBool bool
 
-func (sb *stringAsBool) UnmarshalJSON(b []byte) error {
-	switch string(b) {
-	case "true", `"true"`, "True", `"True"`:
-		*sb = true
-	case "false", `"false"`, "False", `"False"`:
-		*sb = false
-	default:
-		return errors.New("invalid value for boolean")
-	}
-	return nil
-}
+func (sb *stringAsBool) UnmarshalJSON(b []byte) error { _ = "STUB: not implemented"; return nil }
 
 func EmailFromIDToken(token *oidc.IDToken) (string, bool, error) {
+	_ = "STUB: not implemented"
 	// Extract custom claims
-	var claims struct {
-		Email    string       `json:"email"`
-		Verified stringAsBool `json:"email_verified"`
-	}
-	if err := token.Claims(&claims); err != nil {
-		return "", false, err
-	}
-	if claims.Email == "" {
-		return "", false, errors.New("token missing email claim")
-	}
-
-	return claims.Email, bool(claims.Verified), nil
+	return "", false, nil
 }
 
 func IssuerFromIDToken(token *oidc.IDToken, claimJSONPath string) (string, error) {
-	if claimJSONPath == "" {
-		return token.Issuer, nil
-	}
-	v := any(nil)
-	if err := token.Claims(&v); err != nil {
-		return "", err
-	}
-	result, err := jsonpath.Get(claimJSONPath, v)
-	if err != nil {
-		return "", err
-	}
-	return fmt.Sprintf("%v", result), nil
+	_ = "STUB: not implemented"
+	return "", nil
 }

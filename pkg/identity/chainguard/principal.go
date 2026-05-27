@@ -17,12 +17,9 @@ package chainguard
 import (
 	"context"
 	"crypto/x509"
-	"net/url"
 
 	"github.com/coreos/go-oidc/v3/oidc"
-	"github.com/sigstore/fulcio/pkg/certificate"
 	"github.com/sigstore/fulcio/pkg/identity"
-	"github.com/sigstore/sigstore/pkg/oauthflow"
 )
 
 type workflowPrincipal struct {
@@ -36,58 +33,23 @@ type workflowPrincipal struct {
 
 var _ identity.Principal = (*workflowPrincipal)(nil)
 
-func (w workflowPrincipal) Name(_ context.Context) string {
-	return w.name
-}
+func (w workflowPrincipal) Name(_ context.Context) string { _ = "STUB: not implemented"; return "" }
 
 func PrincipalFromIDToken(_ context.Context, token *oidc.IDToken) (identity.Principal, error) {
-	var claims struct {
-		Actor    map[string]string `json:"act"`
-		Internal struct {
-			ServicePrincipal string `json:"service-principal,omitempty"`
-		} `json:"internal"`
-	}
-
-	if err := token.Claims(&claims); err != nil {
-		return nil, err
-	}
-
-	// This is the exact function that cosign uses to extract the "subject"
-	// (misnomer) from the token in order to establish "proof of possession".
-	// We MUST use this to implement Name() or tokens that embed an email claim
-	// will fail to sign because of this divergent logic.
-	name, err := oauthflow.SubjectFromToken(token)
-	if err != nil {
-		return nil, err
-	}
-
-	return &workflowPrincipal{
-		issuer:           token.Issuer,
-		subject:          token.Subject,
-		name:             name,
-		actor:            claims.Actor,
-		servicePrincipal: claims.Internal.ServicePrincipal,
-	}, nil
+	_ = "STUB: not implemented"
+	return *new(identity.Principal), nil
 }
+
+// This is the exact function that cosign uses to extract the "subject"
+// (misnomer) from the token in order to establish "proof of possession".
+// We MUST use this to implement Name() or tokens that embed an email claim
+// will fail to sign because of this divergent logic.
 
 func (w workflowPrincipal) Embed(_ context.Context, cert *x509.Certificate) error {
-	baseURL, err := url.Parse(w.issuer)
-	if err != nil {
-		return err
-	}
-
-	// Set SAN to the <issuer>/<subject>
-	cert.URIs = []*url.URL{baseURL.JoinPath(w.subject)}
-
-	cert.ExtraExtensions, err = certificate.Extensions{
-		Issuer:  w.issuer,
-		Subject: w.subject,
-
-		// TODO(mattmoor): Embed more of the Chainguard token structure via OIDs.
-	}.Render()
-	if err != nil {
-		return err
-	}
-
+	_ = "STUB: not implemented"
 	return nil
 }
+
+// Set SAN to the <issuer>/<subject>
+
+// TODO(mattmoor): Embed more of the Chainguard token structure via OIDs.

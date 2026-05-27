@@ -23,9 +23,8 @@ package protobuf
 
 import (
 	context "context"
+
 	grpc "google.golang.org/grpc"
-	codes "google.golang.org/grpc/codes"
-	status "google.golang.org/grpc/status"
 )
 
 // This is a compile-time assertion to ensure that this generated file
@@ -59,37 +58,23 @@ type cAClient struct {
 }
 
 func NewCAClient(cc grpc.ClientConnInterface) CAClient {
-	return &cAClient{cc}
+	_ = "STUB: not implemented"
+	return *new(CAClient)
 }
 
 func (c *cAClient) CreateSigningCertificate(ctx context.Context, in *CreateSigningCertificateRequest, opts ...grpc.CallOption) (*SigningCertificate, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(SigningCertificate)
-	err := c.cc.Invoke(ctx, CA_CreateSigningCertificate_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
 func (c *cAClient) GetTrustBundle(ctx context.Context, in *GetTrustBundleRequest, opts ...grpc.CallOption) (*TrustBundle, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(TrustBundle)
-	err := c.cc.Invoke(ctx, CA_GetTrustBundle_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
 func (c *cAClient) GetConfiguration(ctx context.Context, in *GetConfigurationRequest, opts ...grpc.CallOption) (*Configuration, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(Configuration)
-	err := c.cc.Invoke(ctx, CA_GetConfiguration_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
 // CAServer is the server API for CA service.
@@ -116,87 +101,56 @@ type CAServer interface {
 type UnimplementedCAServer struct{}
 
 func (UnimplementedCAServer) CreateSigningCertificate(context.Context, *CreateSigningCertificateRequest) (*SigningCertificate, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method CreateSigningCertificate not implemented")
+	_ = "STUB: not implemented"
+	return nil, nil
 }
-func (UnimplementedCAServer) GetTrustBundle(context.Context, *GetTrustBundleRequest) (*TrustBundle, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetTrustBundle not implemented")
-}
-func (UnimplementedCAServer) GetConfiguration(context.Context, *GetConfigurationRequest) (*Configuration, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetConfiguration not implemented")
-}
-func (UnimplementedCAServer) mustEmbedUnimplementedCAServer() {}
-func (UnimplementedCAServer) testEmbeddedByValue()            {}
 
-// UnsafeCAServer may be embedded to opt out of forward compatibility for this service.
-// Use of this interface is not recommended, as added methods to CAServer will
-// result in compilation errors.
+func (UnimplementedCAServer) GetTrustBundle(context.Context, *GetTrustBundleRequest) (*TrustBundle, error) {
+	_ = "STUB: not implemented"
+	return nil, nil
+}
+
+func (UnimplementedCAServer) GetConfiguration(context.Context, *GetConfigurationRequest) (*Configuration, error) {
+	_ = "STUB: not implemented"
+	return nil, nil
+}
+
+func (UnimplementedCAServer) mustEmbedUnimplementedCAServer() { _ = "STUB: not implemented"; return }
+func (UnimplementedCAServer) testEmbeddedByValue() {
+	_ = "STUB: not implemented"
+
+	// UnsafeCAServer may be embedded to opt out of forward compatibility for this service.
+	// Use of this interface is not recommended, as added methods to CAServer will
+	// result in compilation errors.
+	return
+}
+
 type UnsafeCAServer interface {
 	mustEmbedUnimplementedCAServer()
 }
 
 func RegisterCAServer(s grpc.ServiceRegistrar, srv CAServer) {
+	_ = "STUB: not implemented"
 	// If the following call pancis, it indicates UnimplementedCAServer was
 	// embedded by pointer and is nil.  This will cause panics if an
 	// unimplemented method is ever invoked, so we test this at initialization
 	// time to prevent it from happening at runtime later due to I/O.
-	if t, ok := srv.(interface{ testEmbeddedByValue() }); ok {
-		t.testEmbeddedByValue()
-	}
-	s.RegisterService(&CA_ServiceDesc, srv)
+	return
 }
 
 func _CA_CreateSigningCertificate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(CreateSigningCertificateRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(CAServer).CreateSigningCertificate(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: CA_CreateSigningCertificate_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(CAServer).CreateSigningCertificate(ctx, req.(*CreateSigningCertificateRequest))
-	}
-	return interceptor(ctx, in, info, handler)
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
 func _CA_GetTrustBundle_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetTrustBundleRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(CAServer).GetTrustBundle(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: CA_GetTrustBundle_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(CAServer).GetTrustBundle(ctx, req.(*GetTrustBundleRequest))
-	}
-	return interceptor(ctx, in, info, handler)
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
 func _CA_GetConfiguration_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetConfigurationRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(CAServer).GetConfiguration(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: CA_GetConfiguration_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(CAServer).GetConfiguration(ctx, req.(*GetConfigurationRequest))
-	}
-	return interceptor(ctx, in, info, handler)
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
 // CA_ServiceDesc is the grpc.ServiceDesc for CA service.

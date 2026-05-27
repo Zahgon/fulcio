@@ -19,7 +19,6 @@ import (
 
 	"github.com/sigstore/fulcio/pkg/config"
 	"github.com/sigstore/fulcio/pkg/identity"
-	"github.com/sigstore/fulcio/pkg/identity/base"
 )
 
 // Deprecated: Use ciprovider.ciProviderIssuer instead
@@ -29,13 +28,11 @@ type buildkiteIssuer struct {
 
 // Deprecated: Use ciprovider.Issuer instead
 func Issuer(issuerURL string) identity.Issuer {
-	return &buildkiteIssuer{base.Issuer(issuerURL)}
+	_ = "STUB: not implemented"
+	return *new(identity.Issuer)
 }
 
 func (e *buildkiteIssuer) Authenticate(ctx context.Context, token string, opts ...config.InsecureOIDCConfigOption) (identity.Principal, error) {
-	idtoken, err := identity.Authorize(ctx, token, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return JobPrincipalFromIDToken(ctx, idtoken)
+	_ = "STUB: not implemented"
+	return *new(identity.Principal), nil
 }

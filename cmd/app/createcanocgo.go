@@ -18,23 +18,14 @@
 package app
 
 import (
-	"github.com/sigstore/fulcio/pkg/log"
 	"github.com/spf13/cobra"
 )
 
 // Just a placeholder for erroring with a meaningful message if the
 // binary has been built with GCO_ENABLED=0 tags.
-func newCreateCACmd() *cobra.Command {
-	return &cobra.Command{
-		Use:   "createca",
-		Short: "Create a root CA in a pkcs11 device (**not supported in this binary**)",
-		Long: `Create an x509 root CA within a pkcs11 device using values
-such as organization, country etc. This can then be used as the root
-certificate authority for an instance of sigstore fulcio`,
-		Run: runCreateCACmdPlaceholder,
-	}
-}
+func newCreateCACmd() *cobra.Command { _ = "STUB: not implemented"; return nil }
 
 func runCreateCACmdPlaceholder(cmd *cobra.Command, args []string) {
-	log.Logger.Fatal("Binary has been built with CGO_ENABLED=0, createca is not supported")
+	_ = "STUB: not implemented"
+	return
 }

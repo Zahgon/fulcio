@@ -16,7 +16,6 @@ package base
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/google/go-cmp/cmp/cmpopts"
 	"github.com/sigstore/fulcio/pkg/config"
@@ -33,24 +32,21 @@ type baseIssuer struct {
 }
 
 func Issuer(issuerURL string) identity.Issuer {
-	return &baseIssuer{issuerURL: issuerURL}
+	_ = "STUB: not implemented"
+	return *new(identity.Issuer)
 }
 
 // This is unimplemented for the base issuer, and should be implemented unique to each issuer
-func (e *baseIssuer) Authenticate(ctx context.Context, token string, opts ...config.InsecureOIDCConfigOption) (identity.Principal, error) { //nolint: revive
-	return nil, fmt.Errorf("unimplemented")
+func (e *baseIssuer) Authenticate(ctx context.Context, token string, opts ...config.InsecureOIDCConfigOption) (identity.Principal, error) {
+	_ = "STUB: not implemented" //nolint: revive
+	return *new(identity.Principal), nil
 }
 
 // Match is the same across issuers, so it doesn't need to be implemented anywhere else
 func (e *baseIssuer) Match(_ context.Context, url string) bool {
-	if url == e.issuerURL {
-		return true
-	}
-	// If this is a MetaIssuer the issuer URL could be a regex
-	// Check if the regex is valid against the provided url
-	re, err := config.MetaRegex(e.issuerURL)
-	if err != nil {
-		return false
-	}
-	return re.MatchString(url)
+	_ = "STUB: not implemented"
+	return false
 }
+
+// If this is a MetaIssuer the issuer URL could be a regex
+// Check if the regex is valid against the provided url

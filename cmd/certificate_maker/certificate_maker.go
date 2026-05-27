@@ -18,12 +18,10 @@
 package main
 
 import (
-	"fmt"
 	"os"
 	"strings"
 	"time"
 
-	"github.com/sigstore/fulcio/pkg/certmaker"
 	"github.com/sigstore/fulcio/pkg/log"
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
@@ -55,17 +53,9 @@ Example: certificate-maker create "https://fulcio.example.com"`,
 	}
 )
 
-func mustBindPFlag(key string, flag *pflag.Flag) {
-	if err := viper.BindPFlag(key, flag); err != nil {
-		log.Logger.Fatal("failed to bind flag", zap.String("flag", key), zap.Error(err))
-	}
-}
+func mustBindPFlag(key string, flag *pflag.Flag) { _ = "STUB: not implemented"; return }
 
-func mustBindEnv(key, envVar string) {
-	if err := viper.BindEnv(key, envVar); err != nil {
-		log.Logger.Fatal("failed to bind env var", zap.String("var", envVar), zap.Error(err))
-	}
-}
+func mustBindEnv(key, envVar string) { _ = "STUB: not implemented"; return }
 
 func init() {
 	log.ConfigureLogger("prod")
@@ -149,116 +139,23 @@ func init() {
 	createCmd.MarkFlagsMutuallyExclusive("intermediate-template", "existing-intermediate-cert")
 }
 
-func runCreate(_ *cobra.Command, args []string) error {
-	defer func() { rootCmd.SilenceUsage = true }()
+func runCreate(_ *cobra.Command, args []string) error { _ = "STUB: not implemented"; return nil }
 
-	// Get common name from args if provided, otherwise templates used
-	var commonName string
-	if len(args) > 0 {
-		commonName = args[0]
-	}
+// Get common name from args if provided, otherwise templates used
 
-	// Build KMS config from flags and environment
-	config := certmaker.KMSConfig{
-		CommonName: commonName,
-		Type:       viper.GetString("kms-type"),
-		KeyID:      viper.GetString("root-key-id"),
-		Options:    make(map[string]string),
-	}
+// Build KMS config from flags and environment
 
-	// Handle KMS provider options
-	switch config.Type {
-	case "gcpkms":
-		if gcpCredsFile := viper.GetString("gcp-credentials-file"); gcpCredsFile != "" {
-			// Check if gcp creds exists
-			if _, err := os.Stat(gcpCredsFile); err != nil {
-				if os.IsNotExist(err) {
-					return fmt.Errorf("failed to initialize KMS: credentials file not found: %s", gcpCredsFile)
-				}
-				return fmt.Errorf("failed to initialize KMS: error accessing credentials file: %w", err)
-			}
-			config.Options["gcp-credentials-file"] = gcpCredsFile
-		}
-	case "azurekms":
-		if azureTenantID := viper.GetString("azure-tenant-id"); azureTenantID != "" {
-			config.Options["azure-tenant-id"] = azureTenantID
-		}
-	case "awskms":
-		if awsRegion := viper.GetString("aws-region"); awsRegion != "" {
-			config.Options["aws-region"] = awsRegion
-		}
-	case "hashivault":
-		if vaultToken := viper.GetString("vault-token"); vaultToken != "" {
-			config.Options["vault-token"] = vaultToken
-		}
-		if vaultAddr := viper.GetString("vault-address"); vaultAddr != "" {
-			config.Options["vault-address"] = vaultAddr
-		}
-		if vaultNamespace := viper.GetString("vault-namespace"); vaultNamespace != "" {
-			config.Options["vault-namespace"] = vaultNamespace
-		}
-	}
+// Handle KMS provider options
 
-	// Get template paths
-	rootTemplate := viper.GetString("root-template")
-	intermediateTemplate := viper.GetString("intermediate-template")
-	leafTemplate := viper.GetString("leaf-template")
+// Check if gcp creds exists
 
-	// Get existing certificate paths
-	existingRootCert := viper.GetString("existing-root-cert")
-	existingIntermediateCert := viper.GetString("existing-intermediate-cert")
+// Get template paths
 
-	// Validate existing certificate files exist before KMS initialization
-	if existingRootCert != "" {
-		if _, err := os.Stat(existingRootCert); err != nil {
-			if os.IsNotExist(err) {
-				return fmt.Errorf("existing root certificate file not found: %s", existingRootCert)
-			}
-			return fmt.Errorf("error accessing existing root certificate file: %w", err)
-		}
-	}
+// Get existing certificate paths
 
-	if existingIntermediateCert != "" {
-		if _, err := os.Stat(existingIntermediateCert); err != nil {
-			if os.IsNotExist(err) {
-				return fmt.Errorf("existing intermediate certificate file not found: %s", existingIntermediateCert)
-			}
-			return fmt.Errorf("error accessing existing intermediate certificate file: %w", err)
-		}
-	}
+// Validate existing certificate files exist before KMS initialization
 
-	// Validate template paths if provided
-	if rootTemplate != "" {
-		if err := certmaker.ValidateTemplate(rootTemplate, nil, "root"); err != nil {
-			return fmt.Errorf("root template error: %w", err)
-		}
-	}
-	if intermediateTemplate != "" {
-		if err := certmaker.ValidateTemplate(intermediateTemplate, nil, "intermediate"); err != nil {
-			return fmt.Errorf("intermediate template error: %w", err)
-		}
-	}
-	if leafTemplate != "" {
-		if err := certmaker.ValidateTemplate(leafTemplate, nil, "leaf"); err != nil {
-			return fmt.Errorf("leaf template error: %w", err)
-		}
-	}
-
-	return certmaker.CreateCertificates(config,
-		rootTemplate,
-		leafTemplate,
-		viper.GetString("root-cert"),
-		viper.GetString("leaf-cert"),
-		viper.GetString("intermediate-key-id"),
-		viper.GetString("intermediate-template"),
-		viper.GetString("intermediate-cert"),
-		viper.GetString("leaf-key-id"),
-		viper.GetDuration("root-lifetime"),
-		viper.GetDuration("intermediate-lifetime"),
-		viper.GetDuration("leaf-lifetime"),
-		existingRootCert,
-		existingIntermediateCert)
-}
+// Validate template paths if provided
 
 func main() {
 	rootCmd.SilenceErrors = true
